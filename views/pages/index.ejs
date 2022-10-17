@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <title>Bayrak Sende 4</title>
+  </head>
+  <body class="bg-dark">
+    <%- include('../includes/navbar.ejs') %>
+    <div class="container">
+      <% if (locals.username) { %>
+      <h1 class="text-center mt-5"><%- username %></h1>
+      <% } else{ %>
+      <h1 class="text-center mt-5">Bayrak Sende 4</h1>
+      <% } %>
+    </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+</html>

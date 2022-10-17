@@ -1,0 +1,162 @@
+const express = require("express");
+const app = express();
+const port = 3000;
+const db = require("./db");
+const User = require("./routes/User");
+const Team = require("./routes/Team");
+const Admin = require("./routes/Admin");
+const Challange = require("./routes/Challange");
+const session = require("express-session");
+
+require("dotenv").config();
+app.use("/assets", express.static(__dirname + "/public"));
+
+app.use(express.json());
+app.use(
+  session({
+    secret: process.env.SECRET_KEY,
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+
+app.set("trust proxy", 1);
+app.set("view engine", "ejs");
+
+app.use(User);
+app.use(Team);
+app.use(Challange);
+app.use(Admin);
+
+app.get("/", (req, res) => {
+  if (req.session.user) {
+    res.render("pages/index", req.session.user);
+  } else {
+    res.render("pages/index", null);
+  }
+});
+
+app.get("/login", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("pages/login");
+  }
+});
+
+app.get("/register", (req, res) => {
+  if (req.session.user) {
+    res.redirect("/");
+  } else {
+    res.render("pages/register");
+  }
+});
+
+app.get("/profile", (req, res) => {
+  if (req.session.user) {
+    res.render("pages/profile", req.session.user);
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/team", (req, res) => {
+  if (req.session.user) {
+    db.knex("users")
+      .where({ id: req.session.user.id })
+      .then((data) => {
+        req.session.user.teamId = data[0].teamId;
+        req.session.user.teamName = data[0].teamName;
+        req.session.user.teamCaptain = data[0].teamCaptain;
+
+        if (data[0].teamId == null || !req.session.user.teamId) {
+          res.render("pages/no-team", req.session.user);
+          return;
+        }
+      });
+
+    db.knex("users")
+      .where({ id: req.session.user.id })
+      .then((data) => {
+        if (data[0].teamId) {
+          req.session.user.teamId = data[0].teamId;
+          req.session.user.teamName = data[0].teamName;
+          req.session.user.teamCaptain = data[0].teamCaptain;
+          db.knex
+            .select("*")
+            .from("users")
+            .where({ teamId: req.session.user.teamId })
+            .then((data) => {
+              user = {
+                ...req.session.user,
+                ...{ members: data },
+              };
+              db.knex
+                .select("captainId")
+                .from("teams")
+                .where({ id: req.session.user.teamId })
+                .then((data) => {
+                  if (data[0].captainId == req.session.user.id) {
+                    user = {
+                      ...user,
+                      ...{ captain: true },
+                    };
+                  }
+                });
+
+              res.render("pages/team", user);
+            });
+        }
+      });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/team-create", (req, res) => {
+  if (req.session.user && !req.session.user.teamId) {
+    res.render("pages/team-create", req.session.user);
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/team-join", (req, res) => {
+  if (req.session.user && !req.session.user.teamId) {
+    res.render("pages/team-join", req.session.user);
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/challanges", (req, res) => {
+  if (req.session.user) {
+    db.knex("users")
+      .where({ id: req.session.user.id })
+      .then((data) => {
+        if (data[0].teamId) {
+          res.render("pages/challanges", req.session.user);
+        } else {
+          req.session.user.teamId = data[0].teamId;
+          req.session.user.teamName = data[0].teamName;
+          req.session.user.teamCaptain = data[0].teamCaptain;
+          res.redirect("/team");
+        }
+      });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/logout", (req, res) => {
+  req.session.destroy();
+  res.redirect("/");
+});
+
+app.use((req, res, next) => {
+  res.status(404).json({ message: "Not Found" });
+});
+
+app.listen(port, () => {
+  console.log("SERVER STARTED");
+});

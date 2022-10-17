@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <title>Giriş</title>
+  </head>
+  <body class="bg-dark">
+    <%- include('../includes/navbar.ejs') %>
+    <div>
+      <div class="header"><h1>Giriş</h1></div>
+    </div>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-8 col offset-md-2 col-lg-6 offset-lg-3">
+          <div></div>
+          <form
+            method="post"
+            id="login"
+            accept-charset="utf-8"
+            autocomplete="off"
+          >
+            <div class="mb-3">
+              <b
+                ><label class="form-label" for="name"
+                  >Kullanıcı adı veya e-mail adresi</label
+                ></b
+              >
+              <input
+                class="form-control"
+                id="mail"
+                name="name"
+                required=""
+                type="text"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <b><label class="form-label" for="password">Parola</label></b>
+              <input
+                class="form-control"
+                id="password"
+                name="password"
+                required=""
+                type="password"
+                value=""
+              />
+            </div>
+            <div class="row pt-3">
+              <div class="col-6 col-md-8">
+                <a class="align-middle" href="/reset_password">
+                  Parolanızı mı unuttunuz?
+                </a>
+              </div>
+              <div class="col-6 col-md-4">
+                <input
+                  class="btn btn-block btn-primary w-100"
+                  id="_submit"
+                  name="_submit"
+                  type="submit"
+                  value="Giriş"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+  <script>
+    $(document).ready(function () {
+      $("#login").submit(function (e) {
+        e.preventDefault();
+        var mail = $("#mail").val();
+        var password = $("#password").val();
+        var data = {
+          mail: mail,
+          password: password,
+        };
+        $.ajax({
+          type: "POST",
+          url: "/api/user/login",
+          data: JSON.stringify(data),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          async: false,
+          success: function (data) {
+            if (data.message == "Required fields") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Lütfen tüm alanları doldurunuz.",
+              });
+            } else if (data.message == "Invalid credentials") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "E-mail adresi veya parola hatalı!",
+              });
+            } else if (data.message == "ok") {
+              Swal.fire({
+                icon: "success",
+                title: "Muhteşem!",
+                text: "Giriş başarılı!",
+              }).then(
+                setTimeout(function () {
+                  window.location.href = "/";
+                }, 2000)
+              );
+            }
+          },
+        });
+      });
+    });
+  </script>
+</html>

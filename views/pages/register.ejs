@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <title>Kayıt</title>
+  </head>
+  <body class="bg-dark">
+    <%- include('../includes/navbar.ejs') %>
+    <div>
+      <div class="header"><h1>Kayıt</h1></div>
+    </div>
+    <div class="container mt-5">
+      <div class="row">
+        <div class="col-md-8 col offset-md-2 col-lg-6 offset-lg-3">
+          <div></div>
+          <form
+            method="post"
+            id="login"
+            accept-charset="utf-8"
+            autocomplete="off"
+          >
+            <div class="mb-3">
+              <b
+                ><label class="form-label" for="username"
+                  >Kullanıcı Adı</label
+                ></b
+              >
+              <input
+                class="form-control"
+                id="username"
+                name="name"
+                required=""
+                type="text"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <b><label class="form-label" for="name">E-mail adresi</label></b>
+              <input
+                class="form-control"
+                id="mail"
+                name="name"
+                required=""
+                type="text"
+                value=""
+              />
+            </div>
+            <div class="mb-3">
+              <b><label class="form-label" for="password">Parola</label></b>
+              <input
+                class="form-control"
+                id="password"
+                name="password"
+                required=""
+                type="password"
+                value=""
+              />
+            </div>
+            <div class="row pt-3">
+              <div class="col-6 col-md-12">
+                <input
+                  class="btn btn-block btn-primary w-100"
+                  id="_submit"
+                  name="_submit"
+                  type="submit"
+                  value="Kayıt ol"
+                />
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+  <script>
+    $(document).ready(function () {
+      $("#login").submit(function (e) {
+        e.preventDefault();
+        var username = $("#username").val();
+        var mail = $("#mail").val();
+        var password = $("#password").val();
+        var data = {
+          username: username,
+          mail: mail,
+          password: password,
+        };
+        $.ajax({
+          type: "POST",
+          url: "/api/user/register",
+          data: JSON.stringify(data),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          async: false,
+          success: function (data) {
+            if (data.message == "Required fields") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Lütfen tüm alanları doldurunuz.",
+              });
+            } else if (data.message == "Invalid password") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Parolanız en az 8 karakter olmalıdır!",
+              });
+            } else if (data.message == "Invalid email") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Lütfen geçerli bir e-mail adresi giriniz!",
+              });
+            } else if (data.message == "User already exists") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Kullanıcı adı veya e-mail adresi zaten kullanılıyor!",
+              });
+            } else if (data.message == "ok") {
+              Swal.fire({
+                icon: "success",
+                title: "Mükemmel!",
+                text: "Kayıt başarılı!",
+              }).then(
+                setTimeout(function () {
+                  window.location.href = "/";
+                }, 2000)
+              );
+            }
+          },
+        });
+      });
+    });
+  </script>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Admin</title>
+</head>
+
+<body class="bg-dark">
+  <script>
+    $.grep(users, function(element) {
+      return element.age >= 10;
+    })
+  </script>
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Admin</h1>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title">Kullanıcılar</h3>
+          </div>
+          <div class="card-body dark">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Kullanıcı Adı</th>
+                  <th scope="col">E-posta</th>
+                  <th scope="col">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let index = 0; index < users.length; index++ ) { %>
+
+
+                <tr>
+                  <td><%= users[index].id %></td>
+                  <td><%= users[index].username %></td>
+                  <td><%= users[index].mail %></td>
+                  <td>
+                    <button class="btn btn-danger" onclick="deleteUser('')">Sil</button>
+                    <a href="/admin/users/<%= users[index].id  %> " class="btn btn-info">Git</a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title">Takımlar</h3>
+          </div>
+          <div class="card-body dark">
+
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Takım Adı</th>
+                  <th scope="col">Kurucu</th>
+                  <th scope="col">ID</th>
+                  <th scope="col">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let team = 0; team < teams.length; team++ ) { %>
+
+                <tr>
+                  <a href="/admin/teams/<%= teams[team].id  %> "></a>
+                  <td><%= teams[team].name %></td>
+                  </a>
+                  <td><%= teams[team].captain %></td>
+                  <td><%= teams[team].id %></td>
+                  <td>
+                    <button class="btn btn-danger" onclick="deleteTeam('')">Sil</button>
+                    <a href="/admin/teams/<%= teams[team].id  %> " class="btn btn-info">Git</a>
+                  </td>
+                </tr>
+
+                <% } %>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+<%- include('../includes/jss.ejs') %>
+
+
+</html>

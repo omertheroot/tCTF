@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <title>Takım</title>
+  </head>
+  <body class="bg-dark">
+    <%- include('../includes/navbar.ejs') %>
+    <div>
+      <div class="header"><h1>Takım</h1></div>
+    </div>
+    <div class="container mt-5">
+      <h1 class="text-center">Takımın yok gibi gözüküyor...</h1>
+      <p class="text-center mt-3">
+        Çok fazla seçeneğin yok, ya bir takım oluşturmalısın, ya da bir takıma
+        girmelisin. Seçim senin ;)
+      </p>
+      <div class="d-inline-block w-100 text-center mt-3">
+        <a class="btn btn-primary mx-auto w-25" href="/team-join"
+          >Takıma katıl</a
+        >
+        <a class="btn btn-primary mx-auto w-25" href="/team-create"
+          >Takım oluştur</a
+        >
+      </div>
+    </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+</html>

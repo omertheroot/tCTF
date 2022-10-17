@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <%- include('../includes/head.ejs') %>
+    <title>Takıma Katıl</title>
+  </head>
+  <body class="bg-dark">
+    <%- include('../includes/navbar.ejs') %>
+    <div>
+      <div class="header"><h1>Takıma Katıl</h1></div>
+    </div>
+    <div class="container mt-5">
+      <form method="post" id="login" accept-charset="utf-8" autocomplete="off">
+        <div class="mb-3">
+          <b><label class="form-label" for="name">Takım Adı</label></b>
+          <input
+            class="form-control"
+            id="name"
+            name="name"
+            required=""
+            type="text"
+            value=""
+          />
+        </div>
+        <b><label class="form-label" for="name">Takım Parolası</label></b>
+          <input
+            class="form-control"
+            id="password"
+            name="name"
+            required=""
+            type="password"
+            value=""
+          />
+          <div class="row pt-3">
+            <div class="col-12 col-md-12">
+              <input
+                class="btn btn-block btn-primary w-100"
+                id="_submit"
+                name="_submit"
+                type="submit"
+                value="Oluştur"
+              />
+            </div>
+          </div>
+        </div>
+        
+      </form>
+    </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+  <script>
+    $(document).ready(function () {
+      $("#login").submit(function (e) {
+        e.preventDefault();
+        var name = $("#name").val();
+        var password = $("#password").val();
+        var data = {
+          name: name,
+            password: password,
+        };
+        $.ajax({
+          type: "POST",
+          url: "/api/team/join",
+          data: JSON.stringify(data),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          async: false,
+          success: function (data) {
+            if (data.message == "User already in a team") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Zaten bir takımdasınız!",
+              });
+            } else if (data.message == "Invalid name") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Takım isminiz geçersiz!",
+              });
+            } else if (data.message == "Team does not exist") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Böyle bir takım yok veya parola yanlış!",
+              });
+            } else if (data.message == "Required fields") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Lütfen tüm alanları doldurunuz.",
+              });
+            } else if (data.message == "Team name already exists") {
+              Swal.fire({
+                icon: "error",
+                title: "Hata",
+                text: "Takım ismi zaten kullanımda!",
+              });
+            } else if (data.message == "Team is full") {
+              Swal.fire({
+                icon: "error",
+                title: "Takım dolu",
+                text: "Girmeye çalıştığınız takım dolu gibi duruyor :(",
+              });
+            }else if (data.message == "ok") {
+              Swal.fire({
+                icon: "success",
+                title: "Süper!",
+                text: "Kayıt başarılı!",
+              }).then(
+                setTimeout(function () {
+                  window.location.href = "/";
+                }, 2000)
+              );
+            }
+          },
+        });
+      });
+    });
+  </script>
+</html>
