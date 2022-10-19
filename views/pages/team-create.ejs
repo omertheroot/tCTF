@@ -74,6 +74,12 @@
               title: "Hata",
               text: "Takım açıklamanız geçersiz!",
             });
+          } else if (data.message == "Invalid password") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Parola en az 8 karakterli olmalıdır",
+            });
           } else if (data.message == "Required fields") {
             Swal.fire({
               icon: "error",
