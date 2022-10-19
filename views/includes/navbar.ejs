@@ -22,10 +22,6 @@
           Kayıt Ol</a>
       </div>
       <% } else if (locals.user.username) { %>
-      <% if (locals.user.isAdmin == 1) { %>
-      <a class="dropdown-item" href="/admin">Admin Panel</a>
-
-      <% } %>
       <div class="dropdown">
         <a class="btn text-light dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
           <i class="fa fa-user" aria-hidden="true"></i>
