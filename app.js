@@ -102,8 +102,8 @@ app.get("/team", (req, res) => {
             .where({ teamId: req.session.user.teamId })
             .then((data) => {
               user = {
-                ...req.session.user,
-                ...{ members: data },
+                user: req.session.user,
+                members: data,
               };
               db.knex
                 .select("captainId")
@@ -112,8 +112,9 @@ app.get("/team", (req, res) => {
                 .then((data) => {
                   if (data[0].captainId == req.session.user.id) {
                     user = {
-                      ...user,
-                      ...{ captain: true },
+                      user: req.session.user,
+                      members: data,
+                      captain: true,
                     };
                   }
                 });

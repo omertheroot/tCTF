@@ -143,7 +143,6 @@ router.post("/api/team/join", (req, res) => {
 
 router.post("/api/team/kick", (req, res) => {
   var { username } = req.body;
-  console.log(req.body);
   if (!req.session.user) {
     res.status(200).json({ message: "Unauthorized" });
     return;
@@ -154,6 +153,10 @@ router.post("/api/team/kick", (req, res) => {
   }
   if (!username) {
     res.status(200).json({ message: "Required fields" });
+    return;
+  }
+  if (username == req.session.user.username) {
+    res.status(200).json({ message: "You can't kick yourself" });
     return;
   }
   db.knex
@@ -189,9 +192,6 @@ router.post("/api/team/leave", (req, res) => {
   if (!req.session.user.teamId) {
     res.status(200).json({ message: "Not in a team" });
     return;
-  }
-  if (req.session.user.teamCaptain == true) {
-    console.log("captain");
   }
   if (req.session.user.teamCaptain == true) {
     db.knex("users")

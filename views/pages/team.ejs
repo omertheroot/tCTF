@@ -74,7 +74,7 @@
   </div>
   <div class="container mt-5">
     <h1 class="text-center"><%- user.teamName %> </h1>
-    <h3 class="text-center"><% if (locals.teamCaptain == true) {%>
+    <h3 class="text-center"><% if (locals.user.teamCaptain == true) {%>
       Takımın kaptanısın
       <% } else {%>
       Takımın üyesisin
@@ -82,10 +82,10 @@
     </h3>
     <ul>
       <% for( let i = 0; i < locals.members.length; i++ ) { %>
-      <% if (locals.teamCaptain != true) { %>
+      <% if (locals.user.teamCaptain != true) { %>
       <li><%- members[i].username %></li>
       <% } else{%>
-      <li><%- members[i].username %> <% if (members[i].username != locals.username) { %>
+      <li><%- members[i].username %> <% if (members[i].username != locals.user.username) { %>
         <a onClick='kick("<%- members[i].username %>")'>Takımdan at</a>
         <% } %>
       </li>
@@ -93,14 +93,14 @@
       <% } %>
 
       <% } %>
-      <% if (locals.teamCaptain == true) { %>
+      <% if (locals.user.teamCaptain == true) { %>
       <a href="#" onclick="leave()">Takımı dağıt</a>
-      <% } else if(locals.teamCaptain != true) {%>
+      <% } else if(locals.user.teamCaptain != true) {%>
       <a href="#" onclick="leave()">Takımdan ayrıl</a>
       <% } %>
 
     </ul>
-    <% if (locals.teamCaptain == true) { %>
+    <% if (locals.user.teamCaptain == true) { %>
     <div class="border">
       <h3 class="p-3">Takım parolası değiştir</h3>
       <form class="p-3" method="post" id="passwordChange" accept-charset="utf-8" autocomplete="off">
