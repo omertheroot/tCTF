@@ -7,6 +7,20 @@ const Team = require("./routes/Team");
 const Admin = require("./routes/Admin");
 const Challange = require("./routes/Challange");
 const session = require("express-session");
+const rateLimit = require("express-rate-limit");
+const { json } = require("express");
+
+const limiter = rateLimit({
+  windowMs: 100 * 60 * 15,
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    status: "rate limit exceeded",
+    message: "Adamım acelen nedir, biraz bekle bakalım şöyle :)",
+  },
+});
+app.use(limiter);
 
 require("dotenv").config();
 app.use("/assets", express.static(__dirname + "/public"));
@@ -30,7 +44,7 @@ app.use(Admin);
 
 app.get("/", (req, res) => {
   if (req.session.user) {
-    res.render("pages/index", req.session.user);
+    res.render("pages/index", { user: req.session.user });
   } else {
     res.render("pages/index", null);
   }
@@ -54,7 +68,7 @@ app.get("/register", (req, res) => {
 
 app.get("/profile", (req, res) => {
   if (req.session.user) {
-    res.render("pages/profile", req.session.user);
+    res.render("pages/profile", { user: req.session.user });
   } else {
     res.redirect("/login");
   }
@@ -70,7 +84,7 @@ app.get("/team", (req, res) => {
         req.session.user.teamCaptain = data[0].teamCaptain;
 
         if (data[0].teamId == null || !req.session.user.teamId) {
-          res.render("pages/no-team", req.session.user);
+          res.render("pages/no-team", { user: req.session.user });
           return;
         }
       });
@@ -115,7 +129,7 @@ app.get("/team", (req, res) => {
 
 app.get("/team-create", (req, res) => {
   if (req.session.user && !req.session.user.teamId) {
-    res.render("pages/team-create", req.session.user);
+    res.render("pages/team-create", { user: req.session.user });
   } else {
     res.redirect("/login");
   }
@@ -123,7 +137,7 @@ app.get("/team-create", (req, res) => {
 
 app.get("/team-join", (req, res) => {
   if (req.session.user && !req.session.user.teamId) {
-    res.render("pages/team-join", req.session.user);
+    res.render("pages/team-join", { user: req.session.user });
   } else {
     res.redirect("/login");
   }
@@ -135,7 +149,7 @@ app.get("/challanges", (req, res) => {
       .where({ id: req.session.user.id })
       .then((data) => {
         if (data[0].teamId) {
-          res.render("pages/challanges", req.session.user);
+          res.render("pages/challanges", { user: req.session.user });
         } else {
           req.session.user.teamId = data[0].teamId;
           req.session.user.teamName = data[0].teamName;

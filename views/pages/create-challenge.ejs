@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Sorular</title>
+</head>
+<style>
+  option,
+  select {
+    color: black;
+  }
+</style>
+
+<body class="bg-dark">
+
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Sorular</h1>
+    </div>
+  </div>
+  <div class="container mt-5" id="main">
+    <h1 class="output text-center" id="qbaslik"> </h1>
+    <form id="qform">
+      <label for="isim">Soru ismi</label>
+      <input type="text" class="form-control mb-3" placeholder="Soru" name="" id="qname">
+      <hr>
+      <label for="qcategory">Kategori</label>
+      <select class="form-control" id="qcategory">
+        <option selected>Seçiniz</option>
+        <option value="web">Web Güvenliği</option>
+        <option value="reverse">Tersine Mühendislik</option>
+        <option value="binary">Binary Explotation</option>
+        <option value="game">Oyun</option>
+        <option value="mobile">Mobil Uygulama</option>
+        <option value="forensics">Adli Bilişim</option>
+        <option value="blockchain">Blockchain</option>
+        <option value="iot">IoT</option>
+        <option value="osint">OSINT</option>
+        <option value="misc">Misc.</option>
+        <option value="cloud">Bulut Güvenliği</option>
+        <option value="other">Diğer</option>
+      </select>
+      <input id="qother" type="text" placeholder="Kategori" class="form-control mt-3">
+      <hr>
+      <label for="qbody">Soru metni</label>
+      <textarea name="" id="qbody" cols="30" rows="6" class="tinymce"></textarea>
+      <hr>
+      <label class="" for="qflag">Bayrak</label>
+      <input type="text" class="form-control mb-3" name="" id="qflag" placeholder="FLAG{hihiha}">
+      <hr>
+      <label class="" for="qvalue">Puan</label>
+      <input type="number" class="form-control mb-3" name="" id="qvalue" placeholder="100">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="qhidden" checked>
+        <label class="form-check-label" for="qhidden">
+          Gizli
+        </label>
+      </div>
+      <input type="submit" class="btn btn-block btn-primary w-100 mt-3">
+    </form>
+  </div>
+  <%- include('../includes/jss.ejs') %>
+  <script type="text/javascript" src="/assets/js/tinymce/tinymce.min.js"></script>
+  <script src="/assets/js/tinymce/jquery.tinymce.min.js" referrerpolicy="origin"></script>
+
+  <script>
+    tinymce.init({
+      selector: 'textarea#qbody',
+      theme: "silver",
+      plugins: "image",
+    })
+    $(document).ready(function() {
+      $("#qother").hide();
+      $("#qcategory").change(function() {
+        if ($("#qcategory").find(":selected").text().trim() == "Diğer") {
+          $('#qother').show("fast");
+        } else {
+          $('#qother').hide();
+          $('#qother').val("");
+        }
+      });
+      $('#qname').keyup(function() {
+        var name = $(this).val();
+        if (name.length > 0) {
+          $(".output").text(name);
+        } else {
+          $(".output").text(" ");
+        }
+      });
+      $('#qform').on('submit', function(ed) {
+        tinymce.triggerSave();
+        ed.preventDefault();
+        var TinyAjaxPost = $('#register').serialize();
+        if ($("#qcategory").find(":selected").text().trim() == "Diğer") {
+          var category = $("#qother").val();
+        } else {
+          var category = $("#qcategory").find(":selected").text().trim();
+        }
+        if ($("#qhidden").is(":checked")) {
+          var hidden = true;
+        } else {
+          var hidden = false;
+        }
+        var data = {
+          qname: $('#qname').val().trim(),
+          qcategory: category,
+          qbody: $('#qbody').val(),
+          qflag: $('#qflag').val().trim(),
+          qvalue: $('#qvalue').val().trim(),
+          qhidden: hidden
+        }
+        $.ajax({
+          type: "POST",
+          url: "/api/challenge/create",
+          data: JSON.stringify(data),
+          contentType: "application/json; charset=utf-8",
+          dataType: "json",
+          success: function(data) {
+            if (data.message == "ok") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Soru başarıyla oluşturuldu!',
+                showConfirmButton: false,
+                timer: 3000
+              }).then(
+                function() {
+                  window.location.href = "/admin/challenges";
+                }
+              )
+
+            } else if (data.message == "error") {
+              Swal.fire({
+                icon: 'error',
+                title: 'Bir hata oluştu!',
+                showConfirmButton: false,
+                timer: 3000
+              })
+            } else if (data.message == "Challenge already exists") {
+              Swal.fire({
+                icon: 'error',
+                title: 'Bu isimde bir soru zaten kayıtlı!',
+                showConfirmButton: false,
+                timer: 3000
+              })
+            }
+          }
+        });
+      });
+    });
+  </script>
+  <script type="module">
+    import autoAnimate from 'https://cdn.jsdelivr.net/npm/@formkit/auto-animate@1.0.0-beta.1/index.min.js';
+    autoAnimate(document.getElementById('qbaslik'))
+  </script>
+</body>
+
+
+
+</html>
