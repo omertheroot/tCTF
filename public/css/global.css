@@ -19,3 +19,7 @@
     background-color: #212425 !important;
     color: #fff;
 }
+
+.smooth-border{
+    border-radius: 10%;
+}

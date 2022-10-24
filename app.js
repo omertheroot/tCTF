@@ -68,7 +68,7 @@ app.get("/register", (req, res) => {
 
 app.get("/profile", (req, res) => {
   if (req.session.user) {
-    res.render("pages/profile", { user: req.session.user });
+    res.render("pages/profile", { user: req.session.user, profileuser: req.session.user });
   } else {
     res.redirect("/login");
   }
@@ -168,10 +168,33 @@ app.get("/logout", (req, res) => {
   res.redirect("/");
 });
 
+app.get("/users/:id", (req, res) => {
+  if (req.session.user) {
+    db.knex("users")
+      .where({ id: req.params.id })
+      .then((data) => {
+        if (data.length > 0) {
+          res.render("pages/profile", { user: req.session.user ,profileuser: JSON.parse(JSON.stringify(data))[0]});
+        }
+        else{
+          res.render("pages/404");
+        }
+      });
+  } else {
+    res.redirect("/login");
+  }
+});
+
 app.use((req, res, next) => {
-  res.status(404).json({ message: "Not Found" });
+  if (req.method == "POST") {
+    res.status(404).json({ message: "Not Found" });
+  }
+  else {
+    res.render("pages/404");
+  }
 });
 
 app.listen(port, () => {
   console.log("SERVER STARTED");
+  console.log("node.js at http://127.0.0.1:" + port);
 });
