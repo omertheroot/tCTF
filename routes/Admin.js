@@ -161,29 +161,28 @@ router.post("/api/challenge/create", (req, res) => {
 router.post("/api/admin/verifyuser", (req, res) => {
   var { userID, verify } = req.body;
 
-  if (req.session.user && req.session.user.isAdmin == 1) {
-    db.knex
-      .select("*")
-      .from("users")
-      .where({ id: userID })
-      .then((data) => {
-        if (data.length > 0) {
-          db.knex("users")
-            .where({ id: userID })
-            .update({ isVerified: verify })
-            .then(() => {
-              res.status(200).json({ message: "ok" });
-              return;
-            });
-        } else {
-          res.status(200).json({ message: "No user" });
-          return;
-        }
-      });
-  } else {
+  if (!req.session.user) {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
+  db.knex
+    .select("*")
+    .from("users")
+    .where({ id: userID })
+    .then((data) => {
+      if (data.length > 0) {
+        db.knex("users")
+          .where({ id: userID })
+          .update({ isVerified: verify })
+          .then(() => {
+            res.status(200).json({ message: "ok" });
+            return;
+          });
+      } else {
+        res.status(200).json({ message: "No user" });
+        return;
+      }
+    });
 });
 
 router.post("/api/admin/verifyteam", (req, res) => {
