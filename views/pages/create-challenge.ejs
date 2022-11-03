@@ -57,6 +57,18 @@
         <label class="form-check-label" for="qhidden">
           Gizli
         </label>
+
+      </div>
+      <hr>
+      <label for="qtype">Tür</label>
+      <select class="form-control mb-3" id="qtype">
+        <option value="Statik">Statik</option>
+        <option value="Dinamik">Dinamik</option>
+      </select>
+      <div id="qdynamic" class="input-group">
+        <input type="number" class="form-control mb-2" id="minpoints" placeholder="Minimum puan">
+        <span class="input-group-addon"></span>
+        <input type="number" class="form-control" id="maxsubmissions" placeholder="Minimum puana gelmesi için gereken kullanıcı sayısı">
       </div>
       <input type="submit" class="btn btn-block btn-primary w-100 mt-3">
     </form>
@@ -73,12 +85,20 @@
     })
     $(document).ready(function() {
       $("#qother").hide();
+      $("#qdynamic").hide();
       $("#qcategory").change(function() {
         if ($("#qcategory").find(":selected").text().trim() == "Diğer") {
           $('#qother').show("fast");
         } else {
-          $('#qother').hide();
+          $('#qother').hide("fast");
           $('#qother').val("");
+        }
+      });
+      $("#qtype").change(function() {
+        if ($("#qtype").find(":selected").text().trim() == "Dinamik") {
+          $('#qdynamic').show("fast");
+        } else {
+          $('#qdynamic').hide("fast");
         }
       });
       $('#qname').keyup(function() {
@@ -90,6 +110,19 @@
         }
       });
       $('#qform').on('submit', function(ed) {
+        if ($("#qtype").find(":selected").text().trim() == "Dinamik") {
+          if ($("#minpoints").val() == "" || $("#maxsubmissions").val() == "") {
+            Swal.fire({
+              icon: 'error',
+              title: 'Lütfen tüm alanları doldurunuz',
+              showConfirmButton: false,
+              timer: 3000
+            })
+            return false;
+          }
+          var minpoints = $("#minpoints").val();
+          var maxsubmissions = $("#maxsubmissions").val();
+        }
         tinymce.triggerSave();
         ed.preventDefault();
         var TinyAjaxPost = $('#register').serialize();
@@ -109,7 +142,10 @@
           qbody: $('#qbody').val(),
           qflag: $('#qflag').val().trim(),
           qvalue: $('#qvalue').val().trim(),
-          qhidden: hidden
+          qhidden: hidden,
+          qtype: $("#qtype").find(":selected").text().trim(),
+          minpoints: minpoints,
+          maxsubmissions: maxsubmissions
         }
         $.ajax({
           type: "POST",

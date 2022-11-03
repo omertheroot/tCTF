@@ -68,7 +68,10 @@ app.get("/register", (req, res) => {
 
 app.get("/profile", (req, res) => {
   if (req.session.user) {
-    res.render("pages/profile", { user: req.session.user, profileuser: req.session.user });
+    res.render("pages/profile", {
+      user: req.session.user,
+      profileuser: req.session.user,
+    });
   } else {
     res.redirect("/login");
   }
@@ -144,13 +147,48 @@ app.get("/team-join", (req, res) => {
   }
 });
 
-app.get("/challanges", (req, res) => {
+app.get("/challenges", (req, res) => {
   if (req.session.user) {
     db.knex("users")
       .where({ id: req.session.user.id })
       .then((data) => {
         if (data[0].teamId) {
-          res.render("pages/challanges", { user: req.session.user });
+          if (!req.session.user) {
+            res.status(200).json({ message: "Unauthorized" });
+            return;
+          }
+          if (req.session.user.teamId == null) {
+            res.status(200).json({ message: "User not in a team" });
+            return;
+          }
+          db.knex
+            .select("*")
+            .from("challenges")
+            .where({ hidden: 0 })
+            .then((data) => {
+              db.knex
+                .select("*")
+                .from("solves")
+                .where({ teamId: req.session.user.teamId })
+                .then((solves) => {
+                  var solvedlist = [];
+                  solves.forEach((solve) => {
+                    solvedlist.push(solve.challengeId);
+                  });
+                  data.forEach((challenge) => {
+                    if (solvedlist.includes(challenge.id)) {
+                      challenge.solved = true;
+                    } else {
+                      challenge.solved = false;
+                    }
+                  });
+
+                  res.render("pages/challenges", {
+                    user: req.session.user,
+                    challanges: data,
+                  });
+                });
+            });
         } else {
           req.session.user.teamId = data[0].teamId;
           req.session.user.teamName = data[0].teamName;
@@ -174,9 +212,11 @@ app.get("/users/:id", (req, res) => {
       .where({ id: req.params.id })
       .then((data) => {
         if (data.length > 0) {
-          res.render("pages/profile", { user: req.session.user ,profileuser: JSON.parse(JSON.stringify(data))[0]});
-        }
-        else{
+          res.render("pages/profile", {
+            user: req.session.user,
+            profileuser: JSON.parse(JSON.stringify(data))[0],
+          });
+        } else {
           res.render("pages/404");
         }
       });
@@ -188,8 +228,7 @@ app.get("/users/:id", (req, res) => {
 app.use((req, res, next) => {
   if (req.method == "POST") {
     res.status(404).json({ message: "Not Found" });
-  }
-  else {
+  } else {
     res.render("pages/404");
   }
 });

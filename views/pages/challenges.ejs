@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Sorular</title>
+
+</head>
+
+<body class="bg-dark">
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Sorular</h1>
+    </div>
+  </div>
+  <div class="container container-soru">
+    <div class="modal">
+      <div class="modal-container">
+        <button id="cls" class="btn btn-danger">&times;</button>
+        <h1 id="modal-baslik">
+          baslik
+        </h1>
+        <span id="modal-html">Metin</span>
+        <form class="flag mt-3">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control flag-input" placeholder="Bayrak" id="flag">
+            <input type="submit" class="btn btn-success flag-submit" value="Bende" id="flag-gonder">
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <% 
+        const sorular = locals.challanges.reduce((kategori, soru) => {
+            const { category } = soru;
+            kategori[category] = kategori[category] ?? [];
+            kategori[category].push(soru);
+            return kategori;
+        }, {});
+      %>
+      <% Object.keys(sorular).forEach(kategori => { %>
+
+      <h1 class="w-100 mt-5 mb-3"><%- kategori %></h1>
+      <%  sorular[kategori].forEach((element) => { %>
+      <% if (element.solved == false) { %>
+      <div class="col-sm-6 col-md-4 col-lg-3" id="<%- element.id %>" onclick="soruAc('<%- element.id %>')"><button class="btn btn-dark w-100 btn-soru">
+          <p><%- element.name %></p>
+          <span><%- element.points %> </span>
+        </button></div>
+      <% } else{%>
+      <div class="col-sm-6 col-md-4 col-lg-3" id="<%- element.id %>" onclick="soruAc('<%- element.id %>')"><button class="btn btn-success w-100 btn-soru btn-cozuldu">
+          <p><%- element.name %></p>
+          <span><%- element.points %> </span>
+        </button></div>
+
+      <% } %>
+      <% }) %>
+      <% }) %>
+    </div>
+</body>
+
+<script>
+  $(document).ready(function() {
+    $('.modal').css("z-index", "-1");
+    $('.modal').css("opacity", "0");
+    $('#cls').click(async function() {
+      $(".modal-container").attr("id", null);
+      $('.modal').animate({
+        "opacity": "0"
+      }, 500);
+      await delay(500);
+      $('.modal').css('z-index', '-1');
+    });
+
+    $("#flag-gonder").click(async function(e) {
+      e.preventDefault();
+      var flag = $('#flag').val();
+      var id = $('.modal-container').attr('id');
+      var name = $('#modal-baslik').html();
+      var data = {
+        flag: flag,
+        challengeId: id,
+        name: name
+      }
+      $.ajax({
+        url: '/api/challenge/submit',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function(data) {
+          if (data.message == "ok") {
+            var puan = data.points
+            console.log(puan);
+            Swal.fire({
+              icon: 'success',
+              title: 'Bayrak Doğru!',
+              text: `Tebrikler! Takımına ${puan} puan eklendi.`,
+              showConfirmButton: false,
+              timer: 1500
+            }).then(() => {
+              location.reload();
+            })
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Bayrak Yanlış!',
+              text: 'Üzgünüm, bayrak bu değildi :/',
+              showConfirmButton: false,
+              timer: 10000000
+            })
+          }
+        }
+      });
+    });
+
+  });
+
+  function delay(time) {
+    return new Promise(resolve => setTimeout(resolve, time));
+  }
+
+  function soruAc(id) {
+    $.ajax({
+      url: '/api/challenge/get/' + id,
+      type: 'POST',
+      success: function(data) {
+        if (data.solved == true) {
+          $('#flag').prop('readonly', true);
+          $('#flag-gonder').prop('disabled', true);
+        } else {
+          $('#flag').prop('readonly', false);
+          $('#flag-gonder').prop('disabled', false);
+        }
+        $(".modal-container").attr("id", id);
+        $('#modal-baslik').html(data.name);
+        $('#modal-html').html(data.body);
+        $('.modal').css('z-index', '5');
+        $('.modal').animate({
+          "opacity": "1"
+        }, 500);
+      }
+    });
+  };
+</script>
+<%- include('../includes/jss.ejs') %>
+
+</html>

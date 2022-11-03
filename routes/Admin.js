@@ -9,13 +9,16 @@ router.get("/admin", (req, res) => {
     db.knex("users").then((data) => {
       db.knex("teams").then((data2) => {
         db.knex("challenges").then((data3) => {
-          var admindata = {
-            ...{ user: req.session.user },
-            ...{ users: data },
-            ...{ teams: data2 },
-            ...{ challanges: data3 },
-          };
-          res.render("pages/admin", admindata);
+          db.knex("pages").then((data4) => {
+            var admindata = {
+              ...{ user: req.session.user },
+              ...{ users: data },
+              ...{ teams: data2 },
+              ...{ challanges: data3 },
+              ...{ pages: data4 },
+            };
+            res.render("pages/admin", admindata);
+          });
         });
       });
     });
@@ -46,14 +49,16 @@ router.get("/admin/teams/:id", (req, res) => {
 });
 
 router.get("/admin/users/:id", (req, res) => {
-  if (req.session.user) {
+  if (req.session.user && req.session.user.isAdmin == 1) {
     db.knex("users")
       .where({ id: req.params.id })
       .then((data) => {
         if (data.length > 0) {
-          res.render("pages/profile", { user: req.session.user ,profileuser: JSON.parse(JSON.stringify(data))[0]});
-        }
-        else{
+          res.render("pages/profile", {
+            user: req.session.user,
+            profileuser: JSON.parse(JSON.stringify(data))[0],
+          });
+        } else {
           res.render("pages/404");
         }
       });
@@ -105,7 +110,7 @@ router.post("/api/challenge/create", (req, res) => {
       req.body.qvalue &&
       req.body.qflag &&
       req.body.qcategory &&
-      req.body.qhidden
+      req.body.qtype
     ) {
       var challenge = {
         id: uuidv4(),
@@ -116,6 +121,9 @@ router.post("/api/challenge/create", (req, res) => {
         category: req.body.qcategory,
         hidden: req.body.qhidden,
         author: req.session.user.username,
+        type: req.body.qtype,
+        dMaxSubmissions: req.body.maxsubmissions,
+        dMinPoints: req.body.minpoints,
       };
       db.knex("challenges")
         .where({
@@ -126,6 +134,13 @@ router.post("/api/challenge/create", (req, res) => {
             res.status(200).json({ message: "Challenge already exists" });
             return;
           } else {
+            if (challenge.type == "dynamic") {
+              if (!challenge.dMaxSubmissions || !challenge.dMinPoints) {
+                res.status(200).json({ message: "error" });
+                return;
+              }
+            }
+
             db.knex("challenges")
               .insert(challenge)
               .then((data) => {
@@ -144,111 +159,122 @@ router.post("/api/challenge/create", (req, res) => {
 });
 
 router.post("/api/admin/verifyuser", (req, res) => {
-  var {userID, verify} = req.body;
+  var { userID, verify } = req.body;
 
-  if (!req.session.user) {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    db.knex
+      .select("*")
+      .from("users")
+      .where({ id: userID })
+      .then((data) => {
+        if (data.length > 0) {
+          db.knex("users")
+            .where({ id: userID })
+            .update({ isVerified: verify })
+            .then(() => {
+              res.status(200).json({ message: "ok" });
+              return;
+            });
+        } else {
+          res.status(200).json({ message: "No user" });
+          return;
+        }
+      });
+  } else {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
-  db.knex
-    .select("*")
-    .from("users")
-    .where({ id: userID })
-    .then((data) => {
-      if (data.length > 0) {
-        db.knex("users")
-          .where({ id: userID })
-          .update({ isVerified: verify })
-          .then(() => {
-            res.status(200).json({ message: "ok" });
-            return;
-          });
-      } else {
-        res.status(200).json({ message: "No user" });
-        return;
-      }
-    });
 });
 
 router.post("/api/admin/verifyteam", (req, res) => {
-  var {teamID, verify} = req.body;
+  var { teamID, verify } = req.body;
 
-  if (!req.session.user) {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    db.knex
+      .select("*")
+      .from("teams")
+      .where({ id: teamID })
+      .then((data) => {
+        if (data.length > 0) {
+          db.knex("teams")
+            .where({ id: teamID })
+            .update({ isVerified: verify })
+            .then(() => {
+              res.status(200).json({ message: "ok" });
+              return;
+            });
+        } else {
+          res.status(200).json({ message: "No team" });
+          return;
+        }
+      });
+  } else {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
-  db.knex
-    .select("*")
-    .from("teams")
-    .where({ id: teamID })
-    .then((data) => {
-      if (data.length > 0) {
-        db.knex("teams")
-          .where({ id: teamID })
-          .update({ isVerified: verify })
-          .then(() => {
-            res.status(200).json({ message: "ok" });
-            return;
-          });
-      } else {
-        res.status(200).json({ message: "No team" });
-        return;
-      }
-    });
 });
 
 router.post("/api/admin/deleteuser", (req, res) => {
-  var {userID} = req.body;
+  var { userID } = req.body;
 
-  if (!req.session.user) {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    db.knex
+      .select("*")
+      .from("users")
+      .where({ id: userID })
+      .then((data) => {
+        if (data.length > 0) {
+          db.knex("users")
+            .where({ id: userID })
+            .del()
+            .then(() => {
+              res.status(200).json({ message: "ok" });
+              return;
+            });
+        } else {
+          res.status(200).json({ message: "No user" });
+          return;
+        }
+      });
+  } else {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
-  db.knex
-    .select("*")
-    .from("users")
-    .where({ id: userID })
-    .then((data) => {
-      if (data.length > 0) {
-        db.knex("users")
-          .where({ id: userID })
-          .del()
-          .then(() => {
-            res.status(200).json({ message: "ok" });
-            return;
-          });
-      } else {
-        res.status(200).json({ message: "No user" });
-        return;
-      }
-    });
+});
+
+router.get("/api/admin/challenge/edit/:id", (req, res) => {
+  var ChallengeId = req.params.id;
+  if (!req.session.user && req.session.user.admin != 1) {
+    res.json({ message: "Unauthorized" });
+  }
 });
 
 router.post("/api/admin/changeadmin", (req, res) => {
-  var {userID, admin} = req.body;
+  var { userID, admin } = req.body;
 
-  if (!req.session.user) {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    db.knex
+      .select("*")
+      .from("users")
+      .where({ id: userID })
+      .then((data) => {
+        if (data.length > 0) {
+          db.knex("users")
+            .where({ id: userID })
+            .update({ isAdmin: admin })
+            .then(() => {
+              res.status(200).json({ message: "ok" });
+              return;
+            });
+        } else {
+          res.status(200).json({ message: "No user" });
+          return;
+        }
+      });
+  } else {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
-  db.knex
-    .select("*")
-    .from("users")
-    .where({ id: userID })
-    .then((data) => {
-      if (data.length > 0) {
-        db.knex("users")
-          .where({ id: userID })
-          .update({ isAdmin: admin })
-          .then(() => {
-            res.status(200).json({ message: "ok" });
-            return;
-          });
-      } else {
-        res.status(200).json({ message: "No user" });
-        return;
-      }
-    });
 });
 
 module.exports = router;
