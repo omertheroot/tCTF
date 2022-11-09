@@ -8,9 +8,11 @@
     <%- include('../includes/navbar.ejs') %>
     <div class="container">
       <% if (locals.username) { %>
-      <h1 class="text-center mt-5"><%- username %></h1>
+        <h1 class="text-center mt-5"><%- username %></h1>
+        <% //Yarışma içi anasayfa. Bilgilendirme vs.%>
       <% } else{ %>
-      <h1 class="text-center mt-5">Bayrak Sende 4</h1>
+        <h1 class="text-center mt-5">Bayrak Sende 4</h1>
+        <% //Dışarıdan gelen kullanıcıya. Tanıtım vs.%>
       <% } %>
     </div>
   </body>

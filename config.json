@@ -7,5 +7,14 @@
     },
     "yarisma":{
         "zorunlutakim": false
+    },
+    "sayfalar":{
+        "aaaaa":{
+            "endpoint":"/aaaaa",
+            "admin":0,
+            "hidden":0,
+            "ejs":"aaaaa.ejs",
+            "priority":1
+        }
     }
 }

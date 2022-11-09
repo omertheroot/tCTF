@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const db = require("./db");
+const cfg = require("./config");
 const User = require("./routes/User");
 const Team = require("./routes/Team");
 const Admin = require("./routes/Admin");
@@ -41,6 +42,13 @@ app.use(User);
 app.use(Team);
 app.use(Challange);
 app.use(Admin);
+
+//sayfalar = cfg.readConfig()["sayfalar"];
+//console.log(sayfalar)
+//for (sayfa in sayfalar) {
+//  console.log(sayfa);
+//  console.log(sayfalar[sayfa]["admin"])
+//}
 
 app.get("/", (req, res) => {
   if (req.session.user) {
@@ -196,6 +204,23 @@ app.get("/challenges", (req, res) => {
           res.redirect("/team");
         }
       });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/scoreboard", (req, res) => {
+  if (req.session.user) {
+    db.knex("users").orderBy("point","desc").then((data) => {
+      db.knex("teams").orderBy("points","desc").then((data2) => {
+            var scoredata = {
+              ...{ user: req.session.user },
+              ...{ users: data },
+              ...{ teams: data2 }
+            };
+            res.render("pages/scoreboard", scoredata);
+      });
+    });
   } else {
     res.redirect("/login");
   }
