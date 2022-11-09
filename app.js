@@ -2,7 +2,6 @@ const express = require("express");
 const app = express();
 const port = 3000;
 const db = require("./db");
-const cfg = require("./config");
 const User = require("./routes/User");
 const Team = require("./routes/Team");
 const Admin = require("./routes/Admin");
@@ -10,6 +9,8 @@ const Challange = require("./routes/Challange");
 const session = require("express-session");
 const rateLimit = require("express-rate-limit");
 const { json } = require("express");
+var fileUpload = require("express-fileupload");
+const config = require("./config");
 
 const limiter = rateLimit({
   windowMs: 100 * 60 * 15,
@@ -22,7 +23,7 @@ const limiter = rateLimit({
   },
 });
 app.use(limiter);
-
+app.use(fileUpload({ safeFileNames: /\\/g }));
 require("dotenv").config();
 app.use("/assets", express.static(__dirname + "/public"));
 
@@ -38,17 +39,14 @@ app.use(
 app.set("trust proxy", 1);
 app.set("view engine", "ejs");
 
+cfg = config.readConfig();
+
+config.navbarUpdate();
+
 app.use(User);
 app.use(Team);
 app.use(Challange);
 app.use(Admin);
-
-//sayfalar = cfg.readConfig()["sayfalar"];
-//console.log(sayfalar)
-//for (sayfa in sayfalar) {
-//  console.log(sayfa);
-//  console.log(sayfalar[sayfa]["admin"])
-//}
 
 app.get("/", (req, res) => {
   if (req.session.user) {
@@ -209,23 +207,6 @@ app.get("/challenges", (req, res) => {
   }
 });
 
-app.get("/scoreboard", (req, res) => {
-  if (req.session.user) {
-    db.knex("users").orderBy("point","desc").then((data) => {
-      db.knex("teams").orderBy("points","desc").then((data2) => {
-            var scoredata = {
-              ...{ user: req.session.user },
-              ...{ users: data },
-              ...{ teams: data2 }
-            };
-            res.render("pages/scoreboard", scoredata);
-      });
-    });
-  } else {
-    res.redirect("/login");
-  }
-});
-
 app.get("/logout", (req, res) => {
   req.session.destroy();
   res.redirect("/");
@@ -248,6 +229,40 @@ app.get("/users/:id", (req, res) => {
   } else {
     res.redirect("/login");
   }
+});
+
+app.get("/upload", (req, res) => {
+  res.render("pages/upload", { user: req.session.user });
+});
+
+app.get("/scoreboard", (req, res) => {
+  if (req.session.user) {
+    db.knex("users")
+      .orderBy("point", "desc")
+      .then((data) => {
+        db.knex("teams")
+          .orderBy("points", "desc")
+          .then((data2) => {
+            var scoredata = {
+              ...{ user: req.session.user },
+              ...{ users: data },
+              ...{ teams: data2 },
+            };
+            res.render("pages/scoreboard", scoredata);
+          });
+      });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+app.get("/:page", (req, res) => {
+  if (cfg.sayfalar.hasOwnProperty(req.params.page)) {
+    var page = cfg.sayfalar[req.params.page];
+    res.render("pages/custom.ejs", { user: req.session.user, page: page });
+    return;
+  }
+  res.render("pages/404");
 });
 
 app.use((req, res, next) => {

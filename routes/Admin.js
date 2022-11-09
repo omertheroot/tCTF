@@ -3,6 +3,11 @@ const { v4: uuidv4 } = require("uuid");
 const db = require("../db");
 const crypto = require("crypto");
 var xss = require("xss");
+var fs = require("fs");
+const config = require("../config");
+const { readConfig } = require("../config");
+
+cfg = config.readConfig();
 
 router.get("/admin", (req, res) => {
   if (req.session.user && req.session.user.isAdmin == 1) {
@@ -274,6 +279,78 @@ router.post("/api/admin/changeadmin", (req, res) => {
     res.status(200).json({ message: "Unauthorized" });
     return;
   }
+});
+
+router.post("/api/admin/deletechallenge", (req, res) => {
+  var { challengeID } = req.body;
+
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    db.knex
+      .select("*")
+      .from("challenges")
+      .where({ id: challengeID })
+
+      .then((data) => {
+        if (data.length > 0) {
+          db.knex("challenges")
+            .where({ id: challengeID })
+            .del()
+            .then(() => {
+              res.status(200).json({ message: "ok" });
+              return;
+            });
+        } else {
+          res.status(200).json({ message: "No challenge" });
+          return;
+        }
+      });
+  } else {
+    res.status(200).json({ message: "Unauthorized" });
+    return;
+  }
+});
+
+router.get("/admin/pages/add", (req, res) => {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    res.render("pages/admin-addpage", {
+      user: req.session.user,
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.post("/api/admin/pages/add", (req, res) => {
+  var { name, baslik, html, admin, hidden } = req.body;
+  // if (!name || !baslik || !html || !admin || !hidden) {
+  //   res.status(200).json({ message: "error" });
+  //   return;
+  // }
+  //if (req.session.user && req.session.user.isAdmin == 1) {
+  var page = {
+    baslik: baslik,
+    admin: admin,
+    hidden: hidden,
+    ejs: name + ".ejs",
+  };
+  if (cfg.sayfalar.hasOwnProperty(name)) {
+    res.json({ message: "Already exists" });
+    return;
+  }
+  fs.writeFile("views/custom/" + name + ".ejs", html, function (err) {
+    if (err) {
+      res.json({ message: "error" });
+      return;
+    }
+  });
+  var data = fs.readFileSync("config.json");
+  var cfgobj = JSON.parse(data);
+  cfgobj["sayfalar"][name] = page;
+  fs.writeFileSync("config.json", JSON.stringify(cfgobj));
+  config.navbarUpdate();
+  res.status(200).json({ message: "OK" });
+  return;
+  //}
 });
 
 module.exports = router;

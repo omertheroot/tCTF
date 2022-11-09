@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Sayfalar</title>
+  <link rel="stylesheet" href="/assets/js/codemirror/lib/codemirror.css">
+  <link rel="stylesheet" href="/assets/js/codemirror/theme/lesser-dark.css">
+
+
+</head>
+<style>
+  option,
+  select {
+    color: black;
+  }
+</style>
+
+<body class="bg-dark">
+
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Sayfalar</h1>
+    </div>
+  </div>
+  <div class="container mt-5" id="main">
+
+    <form id="qform">
+      <label for="isim">Sayfa ismi</label>
+      <input type="text" class="form-control mb-3" placeholder="Soru" name="" id="baslik">
+      <label for="isim">Endpoint ismi</label>
+      <input type="text" class="form-control mb-3" placeholder="Soru" name="" id="name">
+      <hr>
+      <label for="qbody">Sayfa içeriği</label>
+      <textarea id="html" cols="30" rows="6"></textarea>
+      <hr>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="" id="admin" checked>
+        <label class="form-check-label" for="admin">
+          Admin
+        </label>
+        <br>
+        <input class="form-check-input" type="checkbox" value="" id="hidden" checked>
+        <label class="form-check-label" for="hidden">
+          Gizli
+        </label>
+
+      </div>
+      <input type="submit" class="btn btn-block btn-primary w-100 mt-3">
+
+    </form>
+  </div>
+  <%- include('../includes/jss.ejs') %>
+  <script src="/assets/js/codemirror/lib/codemirror.js"></script>
+  <script src="/assets/js/codemirror/mode/xml/xml.js"></script>
+  <script>
+    $(document).ready(function() {
+
+      var code = $("#html")[0];
+      var editor = CodeMirror.fromTextArea(code, {
+        lineNumbers: true,
+        "theme": "lesser-dark",
+        mode: "xml",
+        extraKeys: {
+          Enter: false
+        }
+      });
+
+      $("#qform").submit(function(e) {
+        e.preventDefault();
+        var baslik = $("#baslik").val();
+        var name = $("#name").val();
+        var html = editor.getValue();
+        var admin = $("#admin").is(":checked");
+        var hidden = $("#hidden").is(":checked");
+        if (baslik == "" || name == "" || html == "") {
+          Swal.fire({
+            icon: 'error',
+            title: 'Hata',
+            text: 'Lütfen tüm alanları doldurunuz!'
+          })
+          return;
+        }
+        data = {
+          baslik: baslik,
+          name: name,
+          html: html,
+          admin: admin,
+          hidden: hidden
+        }
+        console.log(data);
+        $.ajax({
+          type: "POST",
+          url: "/api/admin/pages/add",
+          data: JSON.stringify(data),
+          contentType: "application/json",
+          dataType: 'json',
+          success: function(response) {
+            if (response.message == "OK") {
+              Swal.fire({
+                icon: 'success',
+                title: 'Başarılı',
+                text: 'Sayfa başarıyla eklendi!'
+              })
+            } else if (response.message == "Already exists") {
+              Swal.fire({
+                icon: 'error',
+                title: 'Hata',
+                text: 'Bu sayfa zaten mevcut!'
+              })
+            } else {
+              Swal.fire({
+                icon: 'error',
+                title: 'Hata',
+                text: 'Bir hata oluştu!'
+              })
+            }
+          }
+        });
+      });
+    })
+  </script>
+
+</body>
+
+
+
+</html>

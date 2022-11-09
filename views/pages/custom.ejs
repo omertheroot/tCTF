@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title><%= page.baslik %> </title>
+</head>
+
+<body class="bg-dark">
+  <%- include('../includes/navbar.ejs') %>
+  <div class="container mt-5">
+    <%- include('../custom/'+page.ejs) %>
+  </div>
+</body>
+<%- include('../includes/jss.ejs') %>
+
+</html>

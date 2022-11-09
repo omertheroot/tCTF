@@ -6,13 +6,9 @@
     </button>
     <div class="collapse navbar-collapse justify-content-between" id="navbarNavAltMarkup">
       <div class="navbar-nav">
-        <a class="nav-item nav-link text-light" href="#">Koşullar</a>
-        <a class="nav-item nav-link text-light" href="#">Kurullar</a>
-        <a class="nav-item nav-link text-light" href="#">Ödüller</a>
-        <a class="nav-item nav-link text-light" href="#">Takvim</a>
-        <a class="nav-item nav-link text-light" href="#">SSS</a>
-        <a class="nav-item nav-link text-light" href="#">Galeri</a>
+        <%- include("pages.ejs") %>
         <a class="nav-item nav-link text-light" href="/challenges">Sorular</a>
+        <a class="nav-item nav-link text-light" href="/scoreboard">Skorbord</a>
       </div>
       <% if (!locals.user) { %>
       <div>
