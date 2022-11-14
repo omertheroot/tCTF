@@ -257,9 +257,15 @@ app.get("/scoreboard", (req, res) => {
 });
 
 app.get("/:page", (req, res) => {
-  if (cfg.sayfalar.hasOwnProperty(req.params.page)) {
+  //console.log(JSON.parse(config.readConfig()).sayfalar)
+  sayfalar = JSON.parse(config.readConfig()).sayfalar
+  //console.log(sayfalar)
+  if (sayfalar.hasOwnProperty(req.params.page)) {
+    //console.log(sayfalar)
+    //console.log(req.params.page)
+    //console.log(sayfalar[req.params.page])
     var page = cfg.sayfalar[req.params.page];
-    res.render("pages/custom.ejs", { user: req.session.user, page: page });
+    res.render("pages/custom.ejs", { user: req.session.user, page: sayfalar[req.params.page] });
     return;
   }
   res.render("pages/404");

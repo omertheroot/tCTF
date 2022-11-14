@@ -322,35 +322,44 @@ router.get("/admin/pages/add", (req, res) => {
 
 router.post("/api/admin/pages/add", (req, res) => {
   var { name, baslik, html, admin, hidden } = req.body;
-  // if (!name || !baslik || !html || !admin || !hidden) {
-  //   res.status(200).json({ message: "error" });
-  //   return;
-  // }
-  //if (req.session.user && req.session.user.isAdmin == 1) {
-  var page = {
-    baslik: baslik,
-    admin: admin,
-    hidden: hidden,
-    ejs: name + ".ejs",
-  };
-  if (cfg.sayfalar.hasOwnProperty(name)) {
-    res.json({ message: "Already exists" });
-    return;
-  }
-  fs.writeFile("views/custom/" + name + ".ejs", html, function (err) {
-    if (err) {
-      res.json({ message: "error" });
+   
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    if (!name || !baslik || !html || !admin || !hidden) {
+      res.status(200).json({ message: "error" });
       return;
     }
-  });
-  var data = fs.readFileSync("config.json");
-  var cfgobj = JSON.parse(data);
-  cfgobj["sayfalar"][name] = page;
-  fs.writeFileSync("config.json", JSON.stringify(cfgobj));
-  config.navbarUpdate();
-  res.status(200).json({ message: "OK" });
-  return;
-  //}
+    var data = fs.readFileSync("config.json");
+    var cfgobj = JSON.parse(data);
+    //console.log(cfgobj["sayfalar"]);
+    for (i in cfgobj["sayfalar"]){
+      id = cfgobj["sayfalar"][i]["id"] + 1
+    }
+    var page = {
+      id: id,
+      baslik: baslik,
+      admin: admin,
+      hidden: hidden,
+      ejs: id + ".ejs",
+    };
+    if (cfg.sayfalar.hasOwnProperty(name)) {
+      res.json({ message: "Already exists" });
+      return;
+    }
+    fs.writeFile("views/custom/" + id + ".ejs", html, function (err) {
+      if (err) {
+        res.json({ message: "error" });
+        return;
+      }
+    });
+    var data = fs.readFileSync("config.json");
+    var cfgobj = JSON.parse(data);
+    cfgobj["sayfalar"][name] = page;
+    fs.writeFileSync("config.json", JSON.stringify(cfgobj));
+    config.navbarUpdate();
+    config.updateConfig();
+    res.status(200).json({ message: "OK" });
+    return;
+  }
 });
 
 module.exports = router;
