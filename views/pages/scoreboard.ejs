@@ -15,6 +15,7 @@
   </div>
   <div class="container mt-5">
     <div class="row">
+      <canvas class="graph" id="solves" width="800" height="400"></canvas>
       <div class="col-md-12 mb-5">
         <div class="card dark">
           <div class="card-header dark">
@@ -84,6 +85,30 @@
       </div>
 
     </div>
+    <script>
+      let solves = document.getElementById('solves');
+      let pointsGraph = new Chart(solves, {
+        type: 'bar',
+        data: {
+          labels: ['Web', 'Reverse', 'Binary', 'Game', 'Mobile', 'Forensics', 'Blockchain', 'IoT', 'OSINT', 'Misc', 'Cloud', 'Other'],
+          datasets: [{
+            label: "Takım Puanları",
+            data: ['5', '6', '1', '2', '4', '6', '7', '9', '1', '2', '6', '5'],
+            borderColor: "rgba(255, 99, 132, 1)",
+            borderWidth: 1
+          }],
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: true
+              }
+            }]
+          }
+        }
+      });
+    </script>
 </body>
 <%- include('../includes/jss.ejs') %>
 

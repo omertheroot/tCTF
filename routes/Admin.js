@@ -322,29 +322,86 @@ router.get("/admin/pages/add", (req, res) => {
 
 router.post("/api/admin/pages/add", (req, res) => {
   var { name, baslik, html, admin, hidden } = req.body;
-   
   if (req.session.user && req.session.user.isAdmin == 1) {
-    if (!name || !baslik || !html || !admin || !hidden) {
+    if (!name || !baslik || !html) {
       res.status(200).json({ message: "error" });
       return;
     }
     var data = fs.readFileSync("config.json");
     var cfgobj = JSON.parse(data);
-    //console.log(cfgobj["sayfalar"]);
-    for (i in cfgobj["sayfalar"]){
-      id = cfgobj["sayfalar"][i]["id"] + 1
+    for (i in cfgobj["sayfalar"]) {
+      id = cfgobj["sayfalar"][i]["id"] + 1;
     }
     var page = {
       id: id,
       baslik: baslik,
       admin: admin,
-      hidden: hidden,
+      gizli: hidden,
       ejs: id + ".ejs",
     };
     if (cfg.sayfalar.hasOwnProperty(name)) {
       res.json({ message: "Already exists" });
+    }
+  }
+  fs.writeFile("views/custom/" + id + ".ejs", html, function (err) {
+    if (err) {
+      res.json({ message: "error" });
       return;
     }
+  });
+
+  cfgobj["sayfalar"][name] = page;
+  fs.writeFileSync("config.json", JSON.stringify(cfgobj), function (err) {
+    if (err) {
+      res.json({ message: "error" });
+      return;
+    }
+    config.navbarUpdate();
+    config.updateConfig();
+  });
+
+  res.status(200).json({ message: "OK" });
+  return;
+});
+
+router.get("/admin/pages/edit/:name", (req, res) => {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    var page = req.params.name;
+    var data = fs.readFileSync("config.json");
+    var cfgobj = JSON.parse(data);
+    var id = cfgobj.sayfalar[page].id;
+    if (cfgobj.sayfalar.hasOwnProperty(page)) {
+      var data = {
+        user: req.session.user,
+        page: cfg.sayfalar[page],
+        content: fs.readFileSync("views/custom/" + id + ".ejs", "utf8"),
+        endpoint: page,
+      };
+
+      res.render("pages/admin-editpage", data);
+    } else {
+      res.redirect("/admin/pages");
+    }
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.post("/api/admin/pages/edit/:name", (req, res) => {
+  var { baslik, html, admin, hidden } = req.body;
+  var name = req.params.name;
+  var page = req.params.name;
+  var data = fs.readFileSync("config.json");
+  var cfgobj = JSON.parse(data);
+  var id = cfgobj["sayfalar"][page]["id"];
+  if (cfg.sayfalar.hasOwnProperty(page)) {
+    var page = {
+      id: id,
+      baslik: baslik,
+      admin: admin,
+      gizli: hidden,
+      ejs: id + ".ejs",
+    };
     fs.writeFile("views/custom/" + id + ".ejs", html, function (err) {
       if (err) {
         res.json({ message: "error" });
@@ -355,9 +412,53 @@ router.post("/api/admin/pages/add", (req, res) => {
     var cfgobj = JSON.parse(data);
     cfgobj["sayfalar"][name] = page;
     fs.writeFileSync("config.json", JSON.stringify(cfgobj));
+    fs.readFile("config.json", "utf8", function readFileCallback(err, data) {});
     config.navbarUpdate();
     config.updateConfig();
     res.status(200).json({ message: "OK" });
+
+    return;
+  } else {
+    res.json({ message: "error" });
+    return;
+  }
+});
+
+router.post("/api/admin/scoreboard/teams", (req, res) => {
+  var { key } = req.body;
+  if (key == process.env.ADMIN_KEY) {
+    db.knex("teams")
+      .orderBy("points", "desc")
+      .then((data2) => {
+        res.json(data2);
+      });
+  } else {
+    res.status(200).json({ message: "Unauthorized" });
+    return;
+  }
+});
+
+router.get("/admin/pages", (req, res) => {
+  if (req.session.user && req.session.user.isAdmin == 1) {
+    res.render("pages/admin-pages", {
+      user: req.session.user,
+      pages: cfg.sayfalar,
+    });
+  } else {
+    res.redirect("/login");
+  }
+});
+
+router.post("/api/admin/scoreboard/users", (req, res) => {
+  var { key } = req.body;
+  if (key == process.env.ADMIN_KEY) {
+    db.knex("users")
+      .orderBy("points", "desc")
+      .then((data2) => {
+        res.json(data2);
+      });
+  } else {
+    res.status(200).json({ message: "Unauthorized" });
     return;
   }
 });

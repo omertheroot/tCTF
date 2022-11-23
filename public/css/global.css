@@ -65,3 +65,17 @@
 .swal2-popup {
     z-index: 20000 !important;
 }
+
+select, option{
+    color: #000 !important;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    background-color: #212425;
+    color: white;
+    text-align: center;
+  }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Sayfalar - Admin</title>
+
+
+
+</head>
+<style>
+  option,
+  select {
+    color: black;
+  }
+</style>
+
+<body class="bg-dark">
+
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Sayfalar - Admin</h1>
+    </div>
+  </div>
+  <div class="container mt-5" id="main">
+    <div class="col-md-12 mb-5">
+      <div class="card dark">
+        <div class="card-header dark">
+          <h3 class="card-title">Sayfalar</h3>
+        </div>
+        <div class="card-body dark">
+
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th scope="col">Endpoint</th>
+                <th scope="col">Sayfa adı</th>
+                <th scope="col">Admin</th>
+                <th scope="col">Gizli</th>
+                <th scope="col">İşlem</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% var i = 0%>
+              <% for( var page in pages ) { %>
+              <%var endpoint = Object.keys(pages)[i]%>
+              <%var id = pages[page].id%>
+              <tr>
+
+                <td><%= endpoint %></td>
+
+                <td><%= pages[page].baslik %></td>
+                <td><%= pages[page].admin %></td>
+                <td><%= pages[page].gizli %></td>
+                <td><a href="/admin/pages/edit/<%= endpoint %>"><button class="btn btn-success"><i class="fa-solid fa-pen-to-square"></i></button></a>
+                </td>
+              </tr>
+              <% i = i+1 %>
+              <% } %>
+            </tbody>
+          </table>
+
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <%- include('../includes/jss.ejs') %>
+
+
+</body>
+
+</html>

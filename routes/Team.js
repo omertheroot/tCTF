@@ -5,6 +5,14 @@ const crypto = require("crypto");
 var xss = require("xss");
 
 router.post("/api/team/create", (req, res) => {
+  db.knex("config")
+    .select("data")
+    .where({ type: "paused" })
+    .then((data) => {
+      if (data[0].data == "1") {
+        res.status(403).send({ message: "Paused" });
+      }
+    });
   var { name, description, password } = req.body;
   if (!req.session.user) {
     res.status(401).json({ message: "Unauthorized" });
@@ -87,6 +95,14 @@ router.post("/api/team/create", (req, res) => {
 });
 
 router.post("/api/team/join", (req, res) => {
+  db.knex("config")
+    .select("data")
+    .where({ type: "paused" })
+    .then((data) => {
+      if (data[0].data == "1") {
+        res.status(403).send({ message: "Paused" });
+      }
+    });
   var { name, password } = req.body;
   if (!req.session.user) {
     res.status(401).json({ message: "Unauthorized" });
@@ -142,6 +158,14 @@ router.post("/api/team/join", (req, res) => {
 });
 
 router.post("/api/team/kick", (req, res) => {
+  db.knex("config")
+    .select("data")
+    .where({ type: "paused" })
+    .then((data) => {
+      if (data[0].data == "1") {
+        res.status(403).send({ message: "Paused" });
+      }
+    });
   var { username } = req.body;
   if (!req.session.user) {
     res.status(200).json({ message: "Unauthorized" });
@@ -185,6 +209,14 @@ router.post("/api/team/kick", (req, res) => {
 });
 
 router.post("/api/team/leave", (req, res) => {
+  db.knex("config")
+    .select("data")
+    .where({ type: "paused" })
+    .then((data) => {
+      if (data[0].data == "1") {
+        res.status(403).send({ message: "Paused" });
+      }
+    });
   if (!req.session.user) {
     res.status(200).json({ message: "Unauthorized" });
     return;
@@ -235,6 +267,14 @@ router.post("/api/team/leave", (req, res) => {
 });
 
 router.post("/api/team/changePassword", (req, res) => {
+  db.knex("config")
+    .select("data")
+    .where({ type: "paused" })
+    .then((data) => {
+      if (data[0].data == "1") {
+        res.status(403).send({ message: "Paused" });
+      }
+    });
   var { oldpassword, password } = req.body;
   if (!req.session.user) {
     res.status(200).json({ message: "Unauthorized" });

@@ -1,18 +1,38 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <%- include('../includes/head.ejs') %>
-    <title>Bayrak Sende 4</title>
-  </head>
-  <body class="bg-dark">
-    <%- include('../includes/navbar.ejs') %>
-    <div class="container">
-      <% if (locals.username) { %>
-      <h1 class="text-center mt-5"><%- username %></h1>
-      <% } else{ %>
-      <h1 class="text-center mt-5">Bayrak Sende 4</h1>
-      <% } %>
-    </div>
-  </body>
-  <%- include('../includes/jss.ejs') %>
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Bayrağı Yakala Yarışması</title>
+</head>
+
+<body class="bg-dark">
+
+  <div class="container">
+
+    <h1 class="text-center mt-5">Siber Güvenlik Haftası CTF Yarışması</h1>
+    <h2 class="text-center mt-5">28'inde bekleriz!</h2>
+    <h2 class="text-center mt-5">Yarışmanın başlamasına</h2>
+    <h3 class="text-center mb-5" id="counter"></h3>
+
+  </div>
+  <script>
+    var countDownDate = new Date("Nov 28, 2022 10:00:00").getTime();
+    var x = setInterval(function() {
+      var now = new Date().getTime();
+      var distance = countDownDate - now;
+      var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+      document.getElementById("counter").innerHTML = days + " gün " + hours + " saat " + minutes + " dakika " + seconds + " saniye";
+    }, 1000);
+  </script>
+  <div class="footer pt-2 pb-2"><img src="/assets/img/skyloop.png" style="height: 4vh"></div>
+  </div>
+
+</body>
+<%- include('../includes/jss.ejs') %>
+
 </html>

@@ -16,7 +16,9 @@ var navbarUpdate = function () {
   config = configCache.get("config");
   var html = "";
   for (sayfa in config.sayfalar) {
-    html += `<a class="nav-item nav-link text-light" href="/${sayfa}">${config.sayfalar[sayfa].baslik}</a>\n`;
+    if (config.sayfalar[sayfa].gizli == false) {
+      html += `<a class="nav-item nav-link text-light" href="/${sayfa}">${config.sayfalar[sayfa].baslik}</a>\n`;
+    }
   }
   fs.writeFile("views/includes/pages.ejs", html, function (err) {
     if (err) return console.log(err);

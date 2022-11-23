@@ -5,49 +5,11 @@
     "logo": "https://i.ibb.co/0nQqZ3r/bs.png",
     "logo_kullan": true
   },
-  "yarisma": { "zorunlutakim": true },
+  "yarisma": {
+    "zorunlutakim": true,
+    "kategori": "ortaokul"
+  },
   "sayfalar": {
-    "kosullar": {
-      "id": 1,
-      "baslik": "Koşullar",
-      "admin": false,
-      "gizli": false,
-      "ejs": "1.ejs"
-    },
-    "kurullar": {
-      "id": 2,
-      "baslik": "Kurullar",
-      "admin": false,
-      "gizli": false,
-      "ejs": "2.ejs"
-    },
-    "oduller": {
-      "id": 3,
-      "baslik": "Ödüller",
-      "admin": false,
-      "gizli": false,
-      "ejs": "3.ejs"
-    },
-    "takvim": {
-      "id": 4,
-      "baslik": "Takvim",
-      "admin": false,
-      "gizli": false,
-      "ejs": "4.ejs"
-    },
-    "sss": {
-      "id": 5,
-      "baslik": "SSS",
-      "admin": false,
-      "gizli": false,
-      "ejs": "5.ejs"
-    },
-    "galeri": {
-      "id": 6,
-      "baslik": "Galeri",
-      "admin": false,
-      "gizli": false,
-      "ejs": "6.ejs"
-    }
+
   }
 }
