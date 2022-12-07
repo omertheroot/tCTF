@@ -1,0 +1,271 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
+  html,
+  body {
+    background-color: #000000 !important;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    border-color: #33CCFF;
+    font-family: 'VT323', monospace;
+    font-size: 25px;
+    color: white;
+  }
+
+  #GlobalWrapper,
+  .container {
+    margin: auto;
+    text-align: center;
+    width: 70%;
+  }
+
+  #GlobalWrapper a:hover {
+    background: #d8ff00;
+    color: #000;
+    border-color: #d8ff00;
+  }
+
+  .container a:hover {
+    background: #d8ff00;
+    color: #000;
+    border-color: #d8ff00;
+  }
+
+
+  a {
+    color: inherit;
+    outline: 0;
+    text-decoration: none;
+  }
+
+  .ctel a {
+    margin: 0 auto;
+  }
+
+  .ctel {
+    position: relative;
+    padding: 10px;
+    display: inline-block;
+  }
+
+  .ctel:before,
+  .ctel:after,
+  .ctel>:first-child:before,
+  .ctel>:first-child:after {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-color: #a449d1;
+    border-style: solid;
+    content: ' ';
+
+  }
+
+  .ctel:before {
+    top: 0;
+    left: 0;
+    border-width: 3px 0 0 3px
+  }
+
+  .ctel:after {
+    top: 0;
+    right: 0;
+    border-width: 3px 3px 0 0
+  }
+
+  .ctel>:first-child:before {
+    bottom: 0;
+    right: 0;
+    border-width: 0 3px 3px 0
+  }
+
+  .ctel>:first-child:after {
+    bottom: 0;
+    left: 0;
+    border-width: 0 0 3px 3px
+  }
+
+  .blinking-cursor {
+    color: white;
+    -webkit-animation: 1s blink step-end infinite;
+    -moz-animation: 1s blink step-end infinite;
+    -ms-animation: 1s blink step-end infinite;
+    -o-animation: 1s blink step-end infinite;
+    animation: 1s blink step-end infinite;
+  }
+
+  @keyframes "blink" {
+
+    from,
+    to {
+      color: transparent;
+    }
+
+    50% {
+      color: white;
+    }
+  }
+
+  @-moz-keyframes blink {
+
+    from,
+    to {
+      color: transparent;
+    }
+
+    50% {
+      color: white;
+    }
+  }
+
+  @-webkit-keyframes "blink" {
+
+    from,
+    to {
+      color: transparent;
+    }
+
+    50% {
+      color: white;
+    }
+  }
+
+  @-ms-keyframes "blink" {
+
+    from,
+    to {
+      color: transparent;
+    }
+
+    50% {
+      color: white;
+    }
+  }
+
+  @-o-keyframes "blink" {
+
+    from,
+    to {
+      color: transparent;
+    }
+
+    50% {
+      color: white;
+    }
+  }
+
+  .content {
+    color: #33CCFF;
+  }
+
+  #text {
+    text-align: left;
+    font-size: 1.25em;
+    text-transform: lowercase;
+  }
+
+
+  table,
+  td {
+    border: 1px solid;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  #canli-yayin {
+    border: 1px dotted yellow;
+    padding: 20px;
+  }
+
+
+  .logo {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 20px;
+  }
+
+  #navb {
+    margin-top: 20px;
+    font-size: 14px;
+    top: 20px;
+    justify-content: space-between;
+  }
+
+  #navb hr {
+    margin-bottom: 30px;
+    margin-top: 30px;
+  }
+
+
+  .tablo-ici {
+    padding: 15px;
+  }
+
+  .isinlanma-butonu {
+    padding: 10px;
+    border: 2px dashed #a449d1;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: 0.5s;
+    font-family: 'VT323', monospace;
+    font-size: 22px;
+    box-shadow: 5px 5px #33CCFF;
+  }
+
+  .isinlanma-butonu:hover {
+    padding: 12px;
+    border: 2px solid white;
+    background-color: #a449d1;
+    color: #33CCFF;
+    cursor: pointer;
+    box-shadow: 5px 5px #33CCFF;
+  }
+
+  #footer {
+    text-align: center;
+    padding: 5px 40px 40px 40px;
+  }
+
+  #footer img {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+
+  .footer_aciklama {
+    font-size: 17px;
+  }
+
+  .dropdown {
+    position: relative;
+    display: inline-block;
+  }
+
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+    padding: 12px 16px;
+    z-index: 1;
+  }
+
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+  hr {
+    border: 1px solid #fff;
+
+  }
+</style>

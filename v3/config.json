@@ -1,0 +1,15 @@
+{
+  "hakkinda": {
+    "isim": "Bayrak Sende",
+    "aciklama": "Bayrak Sende CTF 4",
+    "logo": "https://i.ibb.co/0nQqZ3r/bs.png",
+    "logo_kullan": true
+  },
+  "yarisma": {
+    "zorunlutakim": true,
+    "kategori": "ortaokul"
+  },
+  "sayfalar": {
+
+  }
+}

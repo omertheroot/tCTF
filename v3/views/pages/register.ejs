@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Kayıt</title>
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+
+<body>
+
+  <div class="container">
+    <%- include('../includes/navbar.ejs') %>
+    <div>
+      <div class="header">
+        <h1>Kayıt</h1>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-8 col offset-md-2 col-lg-6 offset-lg-3">
+        <div></div>
+        <form method="post" id="login" accept-charset="utf-8" autocomplete="off">
+          <div class="mb-3">
+            <b><label class="form-label" for="username">İsim Soyisim</label></b>
+            <input class="form-control" id="name" name="name" required="" type="text" value="" />
+          </div>
+          <div class="mb-3">
+            <b><label class="form-label" for="username">Kullanıcı Adı</label></b>
+            <input class="form-control" id="username" name="name" required="" type="text" value="" />
+          </div>
+          <div class="mb-3">
+            <b><label class="form-label" for="name">E-mail adresi</label></b>
+            <input class="form-control" id="mail" name="name" required="" type="text" value="" />
+          </div>
+          <div class="mb-3">
+            <b><label class="form-label" for="password">Parola</label></b>
+            <input class="form-control" id="password" name="password" required="" type="password" value="" />
+          </div>
+          <div class="mb-3">
+            <b><label class="form-label" for="okul">Okul</label></b>
+            <input class="form-control" id="okul" required="" type="text" value="" />
+          </div>
+          <b><label for="level">Seviye</label></b>
+          <select class="form-control mb-3" id="level">
+            <option selected>Seçiniz</option>
+            <option value="ortaokul">Ortaokul</option>
+            <option value="lise">Lise</option>
+          </select>
+          <b><label for="formFileSm" class="form-label">Öğrenci Belgesi</label></b>
+          <input class="form-control" id="belge" type="file">
+
+          <div class="row pt-3">
+            <div class="col-6 col-md-12">
+              <button class="isinlanma-butonu mb-3 w-100" id="_submit">Kayıt ol! 🚀</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</body>
+<%- include('../includes/jss.ejs') %>
+<script>
+  $(document).ready(function() {
+    /*$("#_submit").click(function() {
+      $("#login").submit()
+    })*/
+    $("#login").submit(function(e) {
+
+
+      e.preventDefault();
+      var formData = new FormData();
+      var ogrbelgesi = $('#belge')[0].files[0];
+      var username = $("#username").val();
+      var name = $("#name").val();
+      var mail = $("#mail").val();
+      var password = $("#password").val();
+      var level = $("#level").val();
+      var okul = $("#okul").val();
+
+      if (level == "Seçiniz") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Hata',
+          text: 'Lütfen seviyenizi seçiniz!',
+        })
+        return
+      }
+
+      if (username == "" || mail == "" || password == "") {
+        Swal.fire({
+          icon: 'error',
+          title: 'Oops...',
+          text: 'Lütfen tüm alanları doldurunuz!',
+        })
+        return false;
+      }
+
+      formData.append('username', username);
+      formData.append('mail', mail);
+      formData.append('password', password);
+      formData.append('ogrbelgesi', ogrbelgesi);
+      formData.append('level', level);
+      formData.append('name', name);
+      formData.append('okul', okul);
+      $.ajax({
+        type: "POST",
+        url: "/api/user/register",
+        data: formData,
+        contentType: false,
+        processData: false,
+        cache: false,
+        success: function(data) {
+          if (data.message == "Required fields") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Lütfen tüm alanları doldurunuz.",
+            });
+          } else if (data.message == "Invalid password") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Parolanız en az 8 karakter olmalıdır!",
+            });
+          } else if (data.message == "Invalid school name") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Geçersiz okul ismi!",
+            });
+          } else if (data.message == "Invalid file") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Geçersiz dosya türü! Sadece .jpg, .jpeg, .png, .pdf dosyaları yükleyebilirsiniz.",
+            });
+          } else if (data.message == "error") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Beklenmedik hata :/",
+            });
+          } else if (data.message == "Invalid email") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Lütfen geçerli bir e-mail adresi giriniz!",
+            });
+          } else if (data.message == "Invalid username") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Lütfen geçerli bir kullanıcı adı giriniz!",
+            });
+          } else if (data.message == "User already exists") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Kullanıcı adı veya e-mail adresi zaten kullanılıyor!",
+            });
+          } else if (data.message == "ok") {
+            Swal.fire({
+              icon: "success",
+              title: "Mükemmel!",
+              text: "Kayıt başarılı!",
+            }).then(
+              setTimeout(function() {
+                window.location.href = "/";
+              }, 2000)
+            );
+          }
+        },
+      });
+    });
+  });
+</script>
+
+</html>

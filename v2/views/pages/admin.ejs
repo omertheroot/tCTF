@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Admin</title>
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+
+<body class="bg-dark">
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Admin</h1>
+    </div>
+  </div>
+  <div class="container mt-5">
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title">Sayfalar</h3>
+          </div>
+          <div class="card-body dark">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">İsim</th>
+                  <th scope="col">Endopoint</th>
+                  <th scope="col">Admin</th>
+                  <th scope="col">Gizli</th>
+                  <th scope="col">Öncelik</th>
+                  <th scope="col">İşlem</th>
+
+                </tr>
+              </thead>
+              <tbody id="pages">
+                <% for( let index = 0; index < pages.length; index++ ) { %>
+
+
+                <tr>
+                  <td><%= pages[index].id %></td>
+                  <td><%= pages[index].name %></td>
+                  <td><%= pages[index].endpoint %></td>
+                  <td><%= pages[index].admin %></td>
+                  <td><%= pages[index].hidden %></td>
+                  <td><%= pages[index].priority %>.</td>
+
+                  <td class="flex-row">
+                    <button class="btn btn-success"><i class="fa-solid fa-arrow-up"></i></button>
+                    <button class="btn btn-danger"><i class="fa-solid fa-arrow-down"></i></button>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title">Kullanıcılar</h3>
+          </div>
+          <div class="card-body dark">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Kullanıcı Adı</th>
+                  <th scope="col">Adı</th>
+                  <th scope="col">E-posta</th>
+                  <th scope="col">Takım Adı</th>
+                  <th scope="col">İşlem</th>
+
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let index = 0; index < users.length; index++ ) { %>
+
+
+                <tr>
+                  <td><%= users[index].id %></td>
+                  <td><%= users[index].username %></td>
+                  <td><%= users[index].name %></td>
+                  <td><%= users[index].mail %></td>
+                  <td><%= users[index].teamName %></td>
+                  <td class="flex-row">
+                    <% if (!users[index].isVerified) {%>
+                    <button class="btn btn-success" onclick="verifyUser('<%= users[index].id %>','1')"><i class="fa-solid fa-check"></i></button>
+                    <%} else {%>
+                    <button class="btn btn-warning" onclick="verifyUser('<%= users[index].id %>','0')"><i class="fa-solid fa-check"></i></button>
+                    <%}%>
+                    <% if (!users[index].isAdmin) {%>
+                    <button class="btn btn-success" onclick="adminUser('<%= users[index].id %>','1')"><i class="far fa-address-card"></i></button>
+                    <%} else {%>
+                    <button class="btn btn-warning" onclick="adminUser('<%= users[index].id %>','0')"><i class="far fa-address-card"></i></button>
+                    <%}%>
+                    <button class="btn btn-danger" onclick="deleteUser('<%= users[index].id %>')"><i class="fa fa-trash"></i></button>
+                    <a href="/admin/users/<%= users[index].id  %> " class="btn btn-info"><i class="fa-solid fa-up-right-from-square"></i></a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title">Takımlar</h3>
+          </div>
+          <div class="card-body dark">
+
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">Takım Adı</th>
+                  <th scope="col">Kurucu</th>
+                  <th scope="col">ID</th>
+                  <th scope="col">Puan</th>
+                  <th scope="col">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let team = 0; team < teams.length; team++ ) { %>
+
+                <tr>
+                  <a href="/admin/teams/<%= teams[team].id  %> "></a>
+                  <td><%= teams[team].name %></td>
+                  </a>
+                  <td><%= teams[team].captain %></td>
+                  <td><%= teams[team].id %></td>
+                  <td><%= teams[team].points %></td>
+                  <td>
+                    <% if (!teams[team].isVerified) {%>
+                    <button class="btn btn-success" onclick="verifyTeam('<%= teams[team].id %>','1')"><i class="fa-solid fa-check"></i></button>
+                    <%} else {%>
+                    <button class="btn btn-warning" onclick="verifyTeam('<%= teams[team].id %>','0')"><i class="fa-solid fa-check"></i></button>
+                    <%}%>
+                    <button class="btn btn-danger" onclick="deleteTeam('')"><i class="fa fa-trash"></i></button>
+                    <a href="/admin/teams/<%= teams[team].id  %> " class="btn btn-info"><i class="fa-solid fa-up-right-from-square"></i></a>
+                  </td>
+                </tr>
+
+                <% } %>
+              </tbody>
+            </table>
+
+          </div>
+        </div>
+      </div>
+    </div>
+</body>
+<%- include('../includes/jss.ejs') %>
+<script>
+  var $tbody = $('pages')
+  $('.up').click(function() {
+    var $tr = $(this).parent();
+
+    if ($tr.is(':first-child'))
+      $tbody.append($tr);
+    else
+      $tr.insertBefore($tr.prev());
+  });
+
+  $('.down').click(function() {
+    var $tr = $(this).parent();
+
+    if ($tr.is(':last-child'))
+      $tbody.prepend($tr);
+    else
+      $tr.insertAfter($tr.next());
+  });
+
+  function verifyUser(userID, verify) {
+    var data = {
+      userID: userID,
+      verify: verify,
+    };
+    $.ajax({
+      type: "POST",
+      url: "/api/admin/verifyuser",
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: false,
+      success: function(data) {
+        if (data.message == "No user") {
+          Swal.fire({
+            icon: "error",
+            title: "Hata",
+            text: "Kullanıcı bulunamadı",
+          });
+        } else if (data.message == "ok") {
+          Swal.fire({
+            icon: "success",
+            title: "Muhteşem!",
+            text: "Doğrulanma durumu değiştirildi",
+          }).then(
+            setTimeout(function() {
+              window.location.href = "/admin";
+            }, 2000)
+          );
+        }
+      },
+    });
+  }
+
+  function verifyTeam(teamID, verify) {
+    var data = {
+      teamID: teamID,
+      verify: verify,
+    };
+    $.ajax({
+      type: "POST",
+      url: "/api/admin/verifyteam",
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: false,
+      success: function(data) {
+        if (data.message == "No team") {
+          Swal.fire({
+            icon: "error",
+            title: "Hata",
+            text: "Takım bulunamadı",
+          });
+        } else if (data.message == "ok") {
+          Swal.fire({
+            icon: "success",
+            title: "Muhteşem!",
+            text: "Doğrulanma durumu değiştirildi",
+          }).then(
+            setTimeout(function() {
+              window.location.href = "/admin";
+            }, 2000)
+          );
+        }
+      },
+    });
+  }
+
+  function adminUser(userID, admin) {
+    var data = {
+      userID: userID,
+      admin: admin,
+    };
+    $.ajax({
+      type: "POST",
+      url: "/api/admin/changeadmin",
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: false,
+      success: function(data) {
+        if (data.message == "No user") {
+          Swal.fire({
+            icon: "error",
+            title: "Hata",
+            text: "Kullanıcı bulunamadı",
+          });
+        } else if (data.message == "ok") {
+          Swal.fire({
+            icon: "success",
+            title: "Muhteşem!",
+            text: "Adminlik durumu değiştirildi",
+          }).then(
+            setTimeout(function() {
+              window.location.href = "/admin";
+            }, 2000)
+          );
+        }
+      },
+    });
+  }
+
+  function deleteUser(userID) {
+    var data = {
+      userID: userID,
+    };
+    $.ajax({
+      type: "POST",
+      url: "/api/admin/deleteuser",
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      dataType: "json",
+      async: false,
+      success: function(data) {
+        if (data.message == "No user") {
+          Swal.fire({
+            icon: "error",
+            title: "Hata",
+            text: "Kullanıcı bulunamadı",
+          });
+        } else if (data.message == "ok") {
+          Swal.fire({
+            icon: "success",
+            title: "Başarılı!",
+            text: "Kullanıcı silindi",
+          }).then(
+            setTimeout(function() {
+              window.location.href = "/admin";
+            }, 2000)
+          );
+        }
+      },
+    });
+  }
+</script>
+
+</html>

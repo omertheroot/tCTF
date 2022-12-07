@@ -1,0 +1,5 @@
+Error: Cannot find module 'nodemailer'
+Require stack:
+- D:\Github\tCTF\v2\mailer.js
+- D:\Github\tCTF\v2\routes\User.js
+- D:\Github\tCTF\v2\app.js

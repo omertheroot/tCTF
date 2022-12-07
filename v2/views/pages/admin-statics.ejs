@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+  <title>Sorular</title>
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+<style>
+  option,
+  select {
+    color: black;
+  }
+</style>
+
+<body class="bg-dark">
+
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Sorular</h1>
+    </div>
+  </div>
+  <div class="container mt-5" id="main">
+    <canvas class="graph" id="challanges" width="800" height="400"></canvas>
+    <canvas class="graph" id="users" width="800" height="400"></canvas>
+    <canvas class="graph" id="teams" width="800" height="400"></canvas>
+    <canvas class="graph" id="points" width="800" height="400"></canvas>
+    <div class="d-inline-flex w-100">
+      <button class="btn btn-primary w-25 mt-2 mx-auto" id="prev">
+
+        < </button>
+          <button class="btn btn-primary w-25 mt-2 mx-auto" id="next">
+
+            > </button>
+    </div>
+
+  </div>
+  <%- include('../includes/jss.ejs') %>
+  <script>
+    let challanges = document.getElementById('challanges');
+    let challangesGraph = new Chart(challanges, {
+      type: 'bar',
+      data: {
+        labels: ['Web', 'Reverse', 'Binary', 'Game', 'Mobile', 'Forensics', 'Blockchain', 'IoT', 'OSINT', 'Misc', 'Cloud', 'Other'],
+        datasets: [{
+          label: "Sorular",
+          data: ['5', '6', '1', '2', '4', '6', '7', '9', '1', '2', '6', '5'],
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        }],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    let users = document.getElementById('users');
+    let usersGraph = new Chart(users, {
+      type: 'bar',
+      data: {
+        labels: ['Web', 'Reverse', 'Binary', 'Game', 'Mobile', 'Forensics', 'Blockchain', 'IoT', 'OSINT', 'Misc', 'Cloud', 'Other'],
+        datasets: [{
+          label: "Sorular",
+          data: ['5', '6', '1', '2', '4', '6', '7', '9', '1', '2', '6', '5'],
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        }],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    let teams = document.getElementById('teams');
+    let teamGraph = new Chart(teams, {
+      type: 'bar',
+      data: {
+        labels: ['Web', 'Reverse', 'Binary', 'Game', 'Mobile', 'Forensics', 'Blockchain', 'IoT', 'OSINT', 'Misc', 'Cloud', 'Other'],
+        datasets: [{
+          label: "Sorular",
+          data: ['5', '6', '1', '2', '4', '6', '7', '9', '1', '2', '6', '5'],
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        }],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    let points = document.getElementById('points');
+    let pointsGraph = new Chart(points, {
+      type: 'bar',
+      data: {
+        labels: ['Web', 'Reverse', 'Binary', 'Game', 'Mobile', 'Forensics', 'Blockchain', 'IoT', 'OSINT', 'Misc', 'Cloud', 'Other'],
+        datasets: [{
+          label: "Sorular",
+          data: ['5', '6', '1', '2', '4', '6', '7', '9', '1', '2', '6', '5'],
+          borderColor: "rgba(255, 99, 132, 1)",
+          borderWidth: 1
+        }],
+      },
+      options: {
+        scales: {
+          yAxes: [{
+            ticks: {
+              beginAtZero: true
+            }
+          }]
+        }
+      }
+    });
+    /*$(document).ready(
+      var i = 0;
+
+      function() {
+        $('#main').hide();
+        $('#main').fadeIn(1000);
+        $("#prev").click(function() {
+          Slide(-1)
+        })
+        $("#next").click(function() {
+          Slide(1)
+        })
+
+        function Slide(n) {
+          showSlides(i += n);
+        }
+
+        function currentSlide(n) {
+          showSlides(i = n);
+        }
+
+        function showSlides(n) {
+          let a;
+          let slides = document.getElementsByClassName("graph");
+          if (n > slides.length) {
+            slideIndex = 1
+          }
+          if (n < 1) {
+            slideIndex = slides.length
+          }
+          for (a = 0; a < slides.length; a++) {
+            slides[a].style.display = "none";
+          }
+          for (a = 0; a < dots.length; a++) {
+            dots[a].className = dots[a].className.replace(" active", "");
+          }
+          slides[slideIndex - 1].style.display = "block";
+          dots[slideIndex - 1].className += " active";
+        }
+      });*/
+  </script>
+
+</body>
+
+
+
+</html>

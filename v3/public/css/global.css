@@ -1,0 +1,202 @@
+.header {
+    width: 100%;
+    height: 200px;
+    background-color: black;
+    align-items: center;
+    justify-content: center;
+    display: flex;
+}
+
+.navbar {
+    background-color: black !important;
+}
+
+.dark {
+    background-color: black !important;
+    color: #fff;
+}
+
+.btn-soru {
+    height: 100px;
+    margin-bottom: 1rem;
+    background-color: black !important;
+}
+
+.smooth-border {
+    border-radius: 25px;
+}
+
+.btn-cozuldu {
+    background-color: #2ea32e !important;
+}
+
+
+.ctelmodal{
+    background-color: rgb(0,0,0,0.3) !important;
+    justify-content: center;
+    align-items: center;
+    opacity: 0;
+    z-index: 90;
+    height: 96vh;
+    width: auto;
+
+}
+.ctelmodal-container{
+    background-color: #1f1f1f !important;
+    color: #fff;
+    width: 1100px;
+    max-width: 100%;
+    padding: 30px 30px;
+    
+
+} 
+.ctelmodal h1 {
+    margin: 0;
+    margin-bottom: 1rem;
+}
+
+.ctelmodal-container #cls {
+    float: right;
+}
+
+.flag-submit {
+    border-radius: 0px 5% 5% 0px !important;
+}
+
+.swal2-popup {
+    z-index: 20000 !important;
+}
+
+select,
+option {
+    color: #000 !important;
+}
+
+.table {
+    color: #fff !important;
+    font-size: 15px !important;
+}
+
+.ctel-btn {
+    width: 40px;
+    margin-bottom: 2px;
+}
+
+.table td {
+    vertical-align: middle !important;
+}
+
+.ctel-soru-success a {
+    margin: 0 auto;
+  }
+
+  .ctel-soru-success {
+    position: relative;
+    padding: 10px;
+    display: inline-block;
+  }
+
+  .ctel-soru-success:before,
+  .ctel-soru-success:after,
+  .ctel-soru-success>:first-child:before,
+  .ctel-soru-success>:first-child:after {
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    border-color: #32c22d !important;
+    border-style: solid;
+    content: ' ';
+
+  }
+
+  .ctel-soru-success:before {
+    top: 0;
+    left: 0;
+    border-width: 3px 0 0 3px
+  }
+
+  .ctel-soru-success:after {
+    top: 0;
+    right: 0;
+    border-width: 3px 3px 0 0
+  }
+
+  .ctel-soru-success>:first-child:before {
+    bottom: 0;
+    right: 0;
+    border-width: 0 3px 3px 0
+  }
+
+  .ctel-soru-success>:first-child:after {
+    bottom: 0;
+    left: 0;
+    border-width: 0 0 3px 3px
+  }
+
+.ctel-soru{
+    cursor: pointer;
+}
+.ctel-soru:hover{
+    background-color: #1f1f1f !important;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.3s;
+}
+.ctel-cls{
+    cursor: pointer;
+
+}.ctel-cls:hover{
+    background-color: rgb(201, 23, 23);
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1) 0.9s;
+}
+.ctelmodal-container{
+    border-radius: 10px;
+}
+[type="radio"]:checked,
+[type="radio"]:not(:checked) {
+    position: absolute;
+    left: -9999px;
+}
+[type="radio"]:checked + label,
+[type="radio"]:not(:checked) + label
+{
+    position: relative;
+    padding-left: 28px;
+    cursor: pointer;
+    line-height: 20px;
+    display: inline-block;
+    color: #666;
+}
+[type="radio"]:checked + label:before,
+[type="radio"]:not(:checked) + label:before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 18px;
+    height: 18px;
+    border: 1px solid #ddd;
+    border-radius: 100%;
+    background: #fff;
+}
+[type="radio"]:checked + label:after,
+[type="radio"]:not(:checked) + label:after {
+    content: '';
+    width: 12px;
+    height: 12px;
+    background: #a449d1;
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    border-radius: 100%;
+    -webkit-transition: all 0.2s ease;
+    transition: all 0.2s ease;
+}
+[type="radio"]:not(:checked) + label:after {
+    opacity: 0;
+    -webkit-transform: scale(0);
+    transform: scale(0);
+}
+[type="radio"]:checked + label:after {
+    opacity: 1;
+    -webkit-transform: scale(1);
+    transform: scale(1);
+}

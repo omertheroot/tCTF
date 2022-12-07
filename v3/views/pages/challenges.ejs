@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+    <title>Sorular</title>
+
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+
+  <body>
+    <dialog class="ctelmodal">
+      <div class="ctelmodal-container mx-auto mt-5">
+
+        <div id="cls" class="ctel text-center ctel-cls" style="width: 50px; cursor: pointer;">X
+          <div class="rounded-check"></div>
+        </div>
+        <h1 id="ctelmodal-baslik">
+          baslik
+        </h1>
+        <span id="ctelmodal-html">Metin</span>
+        <form class="flag mt-3 form-test">
+
+          <div class="mb-3 ml-3">
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="tA">
+            <label class="form-check-label text-light" for="tA" id="tAl">
+              A şıkkı
+            </label>
+            <br>
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="tB">
+            <label class="form-check-label text-light" for="tB" id="tBl">
+              B şıkkı
+            </label>
+            <br>
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="tC">
+            <label class="form-check-label text-light" for="tC" id="tCl">
+              C şıkkı
+            </label>
+            <br>
+            <input class="form-check-input" type="radio" name="flexRadioDefault" id="tD">
+            <label class="form-check-label text-light" for="tD" id="tDl">
+              D şıkkı
+            </label>
+          </div>
+
+
+          <input type="submit" class="btn btn-success flag-submit-test w-100" value="Gönder Gitsin" id="flag-gonder">
+
+
+
+        </form>
+        <form class="flag mt-3 form-classic">
+          <div class="input-group mb-3">
+            <input type="text" class="form-control flag-input" placeholder="Bayrak" id="flag">
+            <input type="submit" class="btn btn-success flag-submit" value="Bende" id="flag-gonder">
+          </div>
+        </form>
+      </div>
+    </dialog>
+
+
+    <div class="container container-soru">
+      <%- include('../includes/navbar.ejs') %>
+        <div class="ctel w-100">
+          <div class="header">
+            <h1>Sorular</h1>
+          </div>
+        </div>
+
+
+
+        <div class="row">
+          <% const sorular=locals.challanges.reduce((kategori, soru)=> {
+            const { category } = soru;
+            kategori[category] = kategori[category] ?? [];
+            kategori[category].push(soru);
+            return kategori;
+            }, {});
+            %>
+            <% Object.keys(sorular).forEach(kategori=> { %>
+
+              <h1 class="w-100 mt-5 mb-3">
+                <%- kategori %>
+              </h1>
+              <% sorular[kategori].forEach((element)=> { %>
+                <% if (element.solved==false) { %>
+
+
+                  <div class="ctel ctel-soru w-100 col-sm-6 col-md-4 col-lg-3 ml-2 mr-2" id="<%- element.id %>"
+                    onclick="soruAc('<%- element.id %>')">
+                    <p class="mb-1">
+                      <%- element.name %>
+                    </p>
+                    <p class="mb-0">
+                      <%- element.points %>
+                    </p>
+                  </div>
+
+
+                  <% } else{%>
+
+                    <div class="ctel ctel-soru ctel-soru-success w-100 col-sm-6 col-md-4 col-lg-3  ml-2 mr-2"
+                      id="<%- element.id %>" onclick="soruAc('<%- element.id %>')">
+                      <p class="mb-1">
+                        <%- element.name %>
+                      </p>
+                      <p class="mb-0">
+                        <%- element.points %>
+                      </p>
+                    </div>
+                    <% } %>
+
+                      <% }) %>
+
+                        <% }) %>
+
+
+        </div>
+
+    </div>
+  </body>
+
+  <script>
+
+    $(document).ready(function () {
+
+      $("#cls").click(function () {
+        $(".ctelmodal").animate({
+          opacity: 0
+        }, 500, function () {
+          $(".ctelmodal").css("display", "none");
+        });
+
+      });
+      $("#cls-test").click(function () {
+        $(".ctelmodal-test").animate({
+          opacity: 0
+        }, 500, function () {
+          $(".ctelmodal-test").css("display", "none");
+        });
+
+      });
+
+      $(".flag").submit(async function (e) {
+
+        e.preventDefault();
+        var flag = $('#flag').val();
+
+        var name = $('#ctelmodal-baslik').html();
+
+        var isTest = Array.from(e.currentTarget.classList).includes("form-test")
+        var id = window.soru.id
+        if (isTest == true) {
+          console.log("tesaat")
+          var answer = $("input[name='flexRadioDefault']:checked").attr("id");
+          if (answer == undefined) {
+            Swal.fire(
+              'Şık?',
+              'Şık seçmedin!',
+              'question'
+            )
+            return;
+          }
+          var data = {
+            answer: answer,
+            challengeId: id,
+            name: name
+          }
+          $.ajax({
+            url: '/api/challenge/submit/test',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              if (data.message == "ok") {
+                var puan = data.points
+                console.log(puan);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Bayrak Doğru!',
+                  text: `Tebrikler! ${puan} puan kazandın!`,
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  location.reload();
+                })
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Bayrak Yanlış!',
+                  text: 'Üzgünüm, bayrak bu değildi :/',
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  location.reload();
+                })
+              }
+            }
+          });
+        } else {
+          console.log("a")
+          var data = {
+            flag: flag,
+            challengeId: id,
+            name: name
+          }
+          $.ajax({
+            url: '/api/challenge/submit',
+            type: 'POST',
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              if (data.message == "ok") {
+                var puan = data.points
+                console.log(puan);
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Bayrak Doğru!',
+                  text: `Tebrikler! ${puan} Kazandın!`,
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  location.reload();
+                })
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Bayrak Yanlış!',
+                  text: 'Üzgünüm, bayrak bu değildi :/',
+                  showConfirmButton: false,
+                  timer: 2000
+                }).then(() => {
+                  location.reload();
+                })
+              }
+            }
+          });
+        }
+
+
+      });
+
+    });
+
+    function delay(time) {
+      return new Promise(resolve => setTimeout(resolve, time));
+    }
+
+    function soruAc(id) {
+      $.ajax({
+        url: '/api/challenge/get/' + id,
+        type: 'POST',
+        success: function (data) {
+          console.log(data);
+          if (data.solved == true) {
+            if (data.type == "Test") {
+              $('#ctelmodal-baslik').html(data.name);
+              $('#ctelmodal-html').html(data.body);
+
+              $('.form-test').css("display", "block");
+              $('.form-classic').css("display", "none");
+              $(".flag-submit-test").prop("disabled", true);
+              $("#tAl").html(data.tA);
+              $("#tBl").html(data.tB);
+              $("#tCl").html(data.tC);
+              $("#tDl").html(data.tD);
+              // $('#ctelmodal-container').attr('challenge', data.id);
+              $(".ctelmodal").css("display", "block");
+              $(".ctelmodal").animate({
+                opacity: 1
+              }, 500);
+              window.soru = data;
+
+            } else {
+              $('#ctelmodal-baslik').html(data.name);
+              $('#ctelmodal-html').html(data.body);
+              // $('.ctelmodal-container').attr('challenge', data.id);
+              window.soru = data;
+              $('.form-test').css("display", "none");
+              $('.form-classic').css("display", "block");
+              $(".flag-submit-test").prop("disabled", true);
+              $(".flag-submit").prop("disabled", true);
+              $(".flag-input").prop("disabled", true);
+              $(".ctelmodal").css("display", "block");
+              $(".ctelmodal").animate({
+                opacity: 1
+              }, 500);
+            }
+          } else {
+            if (data.type == "Test") {
+              console.log("test");
+              $('#ctelmodal-baslik').html(data.name);
+              $('#ctelmodal-html').html(data.body);
+              window.soru = data;
+              $("#tAl").html(data.tA);
+              $("#tBl").html(data.tB);
+              $("#tCl").html(data.tC);
+              $("#tDl").html(data.tD);
+              // $('.ctelmodal-container').attr('challenge', data.id);
+              $('.form-test').css("display", "block");
+              $(".flag-submit-test").prop("disabled", false);
+              $(".flag-submit").prop("disabled", false);
+              $(".flag-input").prop("disabled", false);
+              $('.form-classic').css("display", "none");
+              $(".ctelmodal").css("display", "block");
+              $(".ctelmodal").animate({
+                opacity: 1
+              }, 500);
+
+            } else {
+              $('#ctelmodal-baslik').html(data.name);
+              $('#ctelmodal-html').html(data.body);
+              $('.form-test').css("display", "none");
+              window.soru = data;
+              $('.form-classic').css("display", "block");
+              $(".flag-submit-test").prop("disabled", false);
+              $(".flag-submit").prop("disabled", false);
+              $(".flag-input").prop("disabled", false);
+              // $('.ctelmodal-container').attr('challenge', data.id);
+              $(".ctelmodal").css("display", "block");
+              $(".ctelmodal").animate({
+                opacity: 1
+              }, 500);
+            }
+          }
+        }
+      });
+    };
+  </script>
+  <%- include('../includes/jss.ejs') %>
+
+</html>

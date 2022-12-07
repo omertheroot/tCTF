@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+
+  <title>Admin - Takım</title>
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+
+<body class="bg-dark">
+  <script>
+    function leave() {
+      $.ajax({
+        url: "/api/team/leave",
+        type: "POST",
+        success: function(data) {
+          if (data.message == "Team deleted") {
+            Swal.fire({
+              title: "Takım silindi",
+              text: "Artık böyle bir takım yok, yeni bir takım oluşturabilirsin.",
+              icon: "success",
+              confirmButtonText: "Tamam"
+            }).then(() => {
+              window.location.href = "/team";
+            });
+          } else if (data.message == "Leaved from the team") {
+            Swal.fire({
+              title: "Takımdan ayrıldın",
+              text: "Artık takımda değilsin, yeni bir takıma katılabilirsin.",
+              icon: "success",
+              confirmButtonText: "Tamam"
+            }).then(() => {
+              window.location.href = "/team";
+            });
+          }
+        },
+      });
+    }
+
+    function kick(username) {
+      var data = {
+        username: username
+      }
+      $.ajax({
+        url: '/api/team/kick',
+        type: 'POST',
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        success: function(data) {
+          console.log(data);
+          if (data.message == "ok") {
+            Swal.fire({
+              icon: 'success',
+              title: 'Başarılı',
+              text: 'Kullanıcı takımdan atıldı!',
+            }).then((result) => {
+              location.reload();
+            });
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'Hata',
+              text: 'Kullanıcıyı atarken bir hata oluştu!',
+            });
+          }
+        }
+      });
+    }
+  </script>
+  <%- include('../includes/navbar.ejs') %>
+  <div>
+    <div class="header">
+      <h1>Admin - <%- team.name %> </h1>
+    </div>
+  </div>
+  <div class="container mt-5">
+
+    <div class="row">
+      <div class="col-md-12 mb-5">
+        <div class="card dark">
+          <div class="card-header dark">
+            <h3 class="card-title"><%- team.name %></h3>
+          </div>
+          <div class="card-body dark">
+            <table class="table table-hover">
+              <thead>
+                <tr>
+                  <th scope="col">ID</th>
+                  <th scope="col">Kullanıcı Adı</th>
+                  <th scope="col">E-posta</th>
+                  <th scope="col">İşlem</th>
+                </tr>
+              </thead>
+              <tbody>
+                <% for( let user = 0; user < users.length; user++ ) { %>
+
+
+                <tr>
+                  <td><%= users[user].id %></td>
+                  <td><%= users[user].username %></td>
+                  <td><%= users[user].mail %></td>
+                  <td>
+                    <button class="btn btn-danger" onclick="deleteUser('')">Sil</button>
+                    <a href="/admin/users/<%= users[user].id  %> " class="btn btn-info">Git</a>
+                  </td>
+                </tr>
+                <% } %>
+              </tbody>
+            </table>
+          </div>
+          <h4 class="ml-2 mb-4">Takım Açıklaması</h4>
+          <span class="ml-2 mb-4"><%= team.description %></span>
+        </div>
+      </div>
+    </div>
+</body>
+<%- include('../includes/jss.ejs') %>
+<script>
+  $(document).ready(function() {
+
+    $("#passwordChange").submit(function(e) {
+      e.preventDefault();
+      var oldpassword = $("#oldpasswlord").val();
+      var password = $("#password").val();
+      var data = {
+        oldpassword: oldpassword,
+        password: password
+      }
+      $.ajax({
+        type: "POST",
+        url: "/api/team/changePassword",
+        data: JSON.stringify(data),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        async: false,
+        success: function(data) {
+          if (data.message == "ok") {
+            Swal.fire({
+              icon: "success",
+              title: "Başarılı",
+              text: "Takım parolası başarıyla değiştirildi!",
+            });
+          } else if (data.message = "Wrong password") {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Mevcut parola yanlış!",
+            });
+          } else {
+            Swal.fire({
+              icon: "error",
+              title: "Hata",
+              text: "Bir hata oluştu!",
+            });
+          }
+        }
+      });
+    });
+
+
+  });
+</script>
+
+</html>

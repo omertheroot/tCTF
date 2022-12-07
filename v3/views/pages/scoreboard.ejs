@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+    <title>Admin</title>
+</head>
+<%- include('../includes/tctf-theme.ejs') %>
+
+  <body>
+    <div class="container">
+    <%- include('../includes/navbar.ejs') %>
+      <div class="ctel w-100">
+        <div class="header">
+          <h1>Skorbord</h1>
+        </div>
+      </div>
+      
+        <div class="row">
+
+          <div class="col-md-12 mb-5">
+            <div class="card dark">
+              <div class="card-header dark">
+                <h3 class="card-title">En Çok Puan Toplayanlar</h3>
+              </div>
+              <div class="card-body dark">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Sıra</th>
+                      <th scope="col">Kullanıcı Adı</th>
+                      <th scope="col">Puanı</th>
+                      <th scope="col">Görüntüle</th>
+
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% for( let index=0; index < users.length; index++ ) { %>
+                      <tr>
+                        <td>
+                          <%= index+1 %>
+                        </td>
+                        <td>
+                          <%= users[index].username %>
+                        </td>
+                        <td>
+                          <%= users[index].point %>
+                        </td>
+                        <td class="flex-row">
+                          <a href="/users/<%= users[index].id  %> " class="btn btn-info"><i
+                              class="fa-solid fa-up-right-from-square"></i></a>
+                        </td>
+                      </tr>
+                      <% } %>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+        </div>
+  </body>
+  <%- include('../includes/jss.ejs') %>
+
+
+</html>

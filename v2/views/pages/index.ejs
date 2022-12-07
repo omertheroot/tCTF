@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="TR">
+
+<head>
+  <%- include('../includes/head.ejs') %>
+  <title>Siber Güvenlik Haftası CTF</title>
+</head>
+
+
+<%- include('../includes/tctf-theme.ejs') %>
+
+
+<body>
+
+
+
+
+  <div id="GlobalWrapper" class="container">
+
+    <%- include('../includes/navbar.ejs') %>
+
+    <img src="/assets/img/sgh-logo.png" alt="Siber Güvenlik Haftası" class="logo">
+
+    <div class="ctel" style="text-align: center;">
+      >> Ortaokullu ve
+      <span id="roundcheck">
+        liseli gençler! << <p>
+          </p>
+          <div class="content" style="color: #56c4e9">B4YR4Ğ1 Y4K4L4 Y4R1ŞM4S1N4</b>'na hoş geldiniz.</div>
+      </span>
+    </div>
+
+    <p></p>
+
+    <div class="ctel" style="text-align: center;">
+      Türkiye Siber Güvenlik Kümelenmesi çatısı altında düzenlenen <strong>Siber Güvenlik Haftası</strong> kapsamında <strong>Ortaokul ve Liseler Arası Bayrağı Yakala Yarışması</strong> çevrim içi ortamda gerçekleştirilecektir.
+      <p>Ninjalık yetilerinizi göstermek için güzel bi' fırsat.</p>
+
+      <div>
+        Işınlanmak için <button class="isinlanma-butonu" onclick="window.location.href='/register';">tıklayınız! 🚀</button>
+      </div>
+
+      <p class="blinking-cursor">_</p>
+
+
+
+      <table>
+        <tbody>
+          <tr>
+            <th colspan="3" style="color: #a449d1" class="tablo-ici">T 4 K V 1 M</th>
+          </tr>
+          <tr>
+            <td>Ortaokul düzeyi:</td>
+            <td>28 Kasım 2022</td>
+            <td>6 saat (10.00-16.00 arası)</td>
+          </tr>
+          <tr>
+            <td>Lise düzeyi:</td>
+            <td>29 Kasım 2022</td>
+            <td>6 saat (10.00-16.00 arası)</td>
+          </tr>
+
+        </tbody>
+        </p>
+
+        <p>
+          <tbody>
+            <tr>
+              <th colspan="3" style="color: #a449d1" class="tablo-ici">Ö D Ü L L 3 R</th>
+            </tr>
+            <tr>
+              <td>Ortaokul düzeyi:</td>
+              <td>
+                1. kişiye
+                <hr>
+                2. kişiye
+                <hr>
+                3. kişiye
+              </td>
+              <td>
+                3.000 TL
+                <hr>
+                2.000 TL
+                <hr>
+                1.000 TL
+              </td>
+            </tr>
+            <tr>
+              <td>Lise düzeyi:</td>
+              <td>
+                1. kişiye
+                <hr>
+                2. kişiye
+                <hr>
+                3. kişiye
+              </td>
+              <td>
+                5.000 TL
+                <hr>
+                3.000 TL
+                <hr>
+                1.000 TL
+              </td>
+            </tr>
+
+          </tbody>
+      </table>
+      </p>
+
+    </div>
+
+
+    <div id="footer">
+
+
+      <p class="footer_aciklama"> <u><a href="https://www.siberguvenlikhaftasi.com">www.siberguvenlikhaftasi.com</a></u> ツ Bayrağı Yakala Yarışması, Türkiye'nin ilk #SiberGüvenlikLisesi <span style="background-color: #d8ff00; color: black">Teknopark İstanbul Mesleki ve Teknik Anadolu Lisesi</span> tarafından hazırlanmıştır.</p>
+
+      <img src="/assets/img/Duzenleyen-Kurumlar.png" width="90%">
+      <div class="mt-3"><img style="cursor: pointer" onclick="window.location.href='https://skyloop.cloud';" src="/assets/img/skyloop.png" width="50%" class="d-inline-block">
+      </div>
+
+    </div>
+
+  </div>
+  </div>
+
+
+</body>
+
+
+
+
+
+<script>
+  $(document).ready(function() {
+    <% if(locals.message) {%>
+    Swal.fire({
+      text: '<%= locals.message %>',
+      icon: 'success',
+      confirmButtonText: 'Tamam'
+    })
+    <% } %>
+  });
+</script>
+
+</html>
